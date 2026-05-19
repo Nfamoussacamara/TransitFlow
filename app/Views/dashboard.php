@@ -7,6 +7,8 @@
     <!-- CSS AOS & Swiper JS CDN -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    <!-- Leaflet.js Cartographie -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <!-- Notre Design System local (avec cache-buster) -->
     <link rel="stylesheet" href="public/css/style.css?v=2.9">
 </head>
@@ -47,6 +49,12 @@
                 <a href="index.php?url=factures">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Factures
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="index.php?url=settings">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Paramètres
                 </a>
             </li>
         </ul>
@@ -107,7 +115,7 @@
                 <p>Suivi en direct des expéditions de marchandises</p>
             </div>
             <!-- Bouton Nouveau Transit aligné à droite du titre -->
-            <button id="btn-open-modal" class="btn-nouveau-transit" onclick="document.getElementById('modal-transit').classList.add('is-open')">
+            <button id="btn-nouveau-transit" class="btn-nouveau-transit" onclick="openNewTransitModal()">
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Nouveau Transit
             </button>
@@ -431,24 +439,73 @@
     setInterval(updateClock, 1000);      // Mise à jour chaque seconde
 </script>
 
+<style>
+    /* Structure Split Layout pour la modale Nouveau Transit */
+    .split-modal-box {
+        max-width: 1050px !important;
+        width: 95% !important;
+        max-height: 92vh !important;
+        display: flex;
+        flex-direction: column;
+    }
+    .split-modal-body {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        overflow: hidden; /* Empêcher le débordement global */
+    }
+    .split-form-col {
+        flex: 1 1 55%;
+        padding: 1.5rem;
+        overflow-y: auto;
+        position: relative;
+        z-index: 2;
+    }
+    .split-map-col {
+        flex: 1 1 45%;
+        display: flex;
+        flex-direction: column;
+        background: #f1f5f9;
+        border-left: 1px solid var(--color-border-light);
+        position: relative;
+        z-index: 1;
+    }
+    @media (max-width: 768px) {
+        .split-modal-body {
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .split-form-col {
+            overflow-y: visible;
+        }
+        .split-map-col {
+            min-height: 350px;
+            border-left: none;
+            border-top: 1px solid var(--color-border-light);
+        }
+    }
+</style>
+
 <!-- =========================================================================
-   Modale : Formulaire d'ajout d'un Nouveau Transit
+   Modale : Formulaire d'ajout d'un Nouveau Transit (avec carte Leaflet)
    ========================================================================= -->
 <div id="modal-transit" class="modal-overlay">
-    <div class="modal-box">
+    <div class="modal-box split-modal-box">
 
-        <!-- En-tête de la modale -->
+        <!-- En-tête de la modale (Global) -->
         <div class="modal-header">
             <h2 class="modal-title">
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 011-1h1m0 0a1 1 0 011 1v1m-3 0h3"></path></svg>
                 Nouveau Transit
             </h2>
-            <button class="modal-close" onclick="document.getElementById('modal-transit').classList.remove('is-open')">&times;</button>
+            <button type="button" class="modal-close" onclick="closeNewTransitModal()">&#215;</button>
         </div>
 
-        <!-- Formulaire POST -->
-        <form method="POST" action="?" class="modal-form">
-            <input type="hidden" name="action" value="nouveau_transit">
+        <div class="split-modal-body">
+            <!-- Colonne Gauche : Formulaire -->
+            <form method="POST" action="?" class="split-form-col">
+                <input type="hidden" name="action" value="nouveau_transit">
+                <input type="hidden" name="distance" id="distance_hidden" value="0">
 
             <!-- Section Marchandise -->
             <div class="form-section-title">Marchandise</div>
@@ -487,7 +544,7 @@
                 </div>
             </div>
 
-            <!-- Section Transit -->
+            <!-- Section Itinéraire -->
             <div class="form-section-title" style="margin-top: 1.25rem;">Itinéraire & Transport</div>
             <div class="form-row">
                 <div class="form-group">
@@ -495,7 +552,7 @@
                     <select id="ville_depart_id" name="ville_depart_id" required>
                         <option value="">-- Départ --</option>
                         <?php foreach ($listeVilles as $v): ?>
-                            <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nom']) ?> (<?= htmlspecialchars($v['pays']) ?>)</option>
+                            <option value="<?= $v['id'] ?>" data-lat="<?= $v['latitude'] ?? '' ?>" data-lng="<?= $v['longitude'] ?? '' ?>"><?= htmlspecialchars($v['nom']) ?> (<?= htmlspecialchars($v['pays']) ?>)</option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -504,7 +561,7 @@
                     <select id="ville_arrivee_id" name="ville_arrivee_id" required>
                         <option value="">-- Arrivée --</option>
                         <?php foreach ($listeVilles as $v): ?>
-                            <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nom']) ?> (<?= htmlspecialchars($v['pays']) ?>)</option>
+                            <option value="<?= $v['id'] ?>" data-lat="<?= $v['latitude'] ?? '' ?>" data-lng="<?= $v['longitude'] ?? '' ?>"><?= htmlspecialchars($v['nom']) ?> (<?= htmlspecialchars($v['pays']) ?>)</option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -531,13 +588,30 @@
 
             <!-- Pied de la modale -->
             <div class="modal-footer">
-                <button type="button" class="btn-cancel" onclick="document.getElementById('modal-transit').classList.remove('is-open')">Annuler</button>
+                <button type="button" class="btn-cancel" onclick="closeNewTransitModal()">Annuler</button>
                 <button type="submit" class="btn-submit">
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     Enregistrer & Facturer
                 </button>
             </div>
-        </form>
+            </form>
+
+            <!-- Colonne Droite : Carte Leaflet -->
+            <div class="split-map-col">
+                <!-- Badge distance flottant -->
+                <div id="distance-badge" style="display:none; position:absolute; bottom:70px; left:50%; transform:translateX(-50%); z-index:1000; background: rgba(4,88,224,0.92); backdrop-filter:blur(8px); color:white; padding:0.5rem 1.2rem; border-radius:30px; font-weight:700; font-size:0.95rem; box-shadow:0 4px 20px rgba(4,88,224,0.4); white-space:nowrap;">
+                    📍 <span id="distance-label">Calculer...</span>
+                </div>
+                <!-- Carte -->
+                <div id="transit-map" style="flex:1; min-height: 380px; border-radius: 0;"></div>
+                <!-- Légende -->
+                <div style="padding: 0.75rem 1rem; background: white; border-top: 1px solid var(--color-border-light); display:flex; align-items:center; gap: 1rem; font-size: 0.8rem; color: var(--color-text-muted);">
+                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:rgb(4,88,224);border-radius:50%;display:inline-block;"></span> Départ</span>
+                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#e03434;border-radius:50%;display:inline-block;"></span> Arrivée</span>
+                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:30px;height:3px;background:rgb(4,88,224);display:inline-block;"></span> Trajet</span>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
@@ -803,6 +877,188 @@
             window.location.href = "index.php?action=supprimer_transit&id=" + activeTransitData.id;
         }
     }
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    /* =========================================================
+       Carte Leaflet – Calcul de distance entre deux villes
+       ========================================================= */
+    let transitMap = null;
+    let routeLine = null;
+    let allCityMarkers = [];
+
+    const iconDepart = L.divIcon({
+        html: '<div style="width:16px;height:16px;border-radius:50%;background:rgb(4,88,224);border:3px solid white;box-shadow:0 2px 8px rgba(4,88,224,0.7);"></div>',
+        className: '', iconAnchor: [8,8]
+    });
+    const iconArrivee = L.divIcon({
+        html: '<div style="width:16px;height:16px;border-radius:50%;background:#e03434;border:3px solid white;box-shadow:0 2px 8px rgba(224,52,52,0.7);"></div>',
+        className: '', iconAnchor: [8,8]
+    });
+    const iconDefault = L.divIcon({
+        html: '<div style="width:12px;height:12px;border-radius:50%;background:#94a3b8;border:2px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3); cursor:pointer; transition: transform 0.2s;"></div>',
+        className: '', iconAnchor: [6,6]
+    });
+
+    function haversineKm(lat1, lng1, lat2, lng2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+        return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    function initTransitMap() {
+        if (transitMap) return;
+        transitMap = L.map('transit-map', { zoomControl: true, attributionControl: false })
+            .setView([10.5, -10.5], 6);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 18
+        }).addTo(transitMap);
+        
+        // Liste de toutes les villes disponibles depuis PHP
+        const villes = <?= json_encode($listeVilles) ?>;
+        
+        villes.forEach(v => {
+            if (v.latitude && v.longitude) {
+                const marker = L.marker([v.latitude, v.longitude], {icon: iconDefault}).addTo(transitMap);
+                marker.bindTooltip(v.nom + ' (' + v.pays + ')', {direction: 'top', offset: [0, -6]});
+                
+                // Interaction directe sur le marqueur
+                marker.on('click', function(e) {
+                    L.DomEvent.stopPropagation(e); // Empêche le clic global de la carte de se déclencher
+                    selectCity(v.id);
+                });
+                
+                allCityMarkers.push({ id: v.id, marker: marker });
+            }
+        });
+
+        // Clic global sur la carte (pays) pour trouver la ville la plus proche
+        transitMap.on('click', function(e) {
+            let nearestCityId = null;
+            let minDistance = Infinity;
+
+            allCityMarkers.forEach(cm => {
+                const latlng = cm.marker.getLatLng();
+                const dist = haversineKm(e.latlng.lat, e.latlng.lng, latlng.lat, latlng.lng);
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    nearestCityId = cm.id;
+                }
+            });
+
+            // Rayon toléré d'environ 1200km (couvre le pays)
+            if (nearestCityId && minDistance < 1200) {
+                selectCity(nearestCityId);
+            }
+        });
+
+        setTimeout(() => transitMap.invalidateSize(), 200);
+    }
+
+    // Fonction commune de sélection
+    function selectCity(cityId) {
+        const selD = document.getElementById('ville_depart_id');
+        const selA = document.getElementById('ville_arrivee_id');
+        
+        if (!selD.value) {
+            selD.value = cityId;
+        } else if (selD.value && !selA.value && selD.value != cityId) {
+            selA.value = cityId;
+        } else {
+            // Reset si les deux sont remplis ou même sélection
+            selD.value = cityId;
+            selA.value = '';
+        }
+        updateMap();
+    }
+
+    function updateMap() {
+        const selD = document.getElementById('ville_depart_id');
+        const selA = document.getElementById('ville_arrivee_id');
+        if (!selD || !selA) return;
+
+        const valD = selD.value;
+        const valA = selA.value;
+
+        // Réinitialiser tous les marqueurs
+        allCityMarkers.forEach(cm => {
+            cm.marker.setIcon(iconDefault);
+            if(cm.marker.getPopup()) cm.marker.unbindPopup();
+            cm.marker.setZIndexOffset(0);
+        });
+
+        let latD = null, lngD = null, latA = null, lngA = null;
+
+        // Marqueur Départ
+        if (valD) {
+            const cm = allCityMarkers.find(c => c.id == valD);
+            if (cm) {
+                cm.marker.setIcon(iconDepart);
+                cm.marker.bindPopup('<b>Départ :</b> ' + selD.options[selD.selectedIndex].text).openPopup();
+                cm.marker.setZIndexOffset(1000);
+                latD = cm.marker.getLatLng().lat;
+                lngD = cm.marker.getLatLng().lng;
+            }
+        }
+
+        // Marqueur Arrivée
+        if (valA) {
+            const cm = allCityMarkers.find(c => c.id == valA);
+            if (cm) {
+                cm.marker.setIcon(iconArrivee);
+                cm.marker.bindPopup('<b>Arrivée :</b> ' + selA.options[selA.selectedIndex].text).openPopup();
+                cm.marker.setZIndexOffset(1000);
+                latA = cm.marker.getLatLng().lat;
+                lngA = cm.marker.getLatLng().lng;
+            }
+        }
+
+        // Tracé + calcul de distance
+        if (routeLine) transitMap.removeLayer(routeLine);
+        
+        if (latD !== null && lngD !== null && latA !== null && lngA !== null) {
+            routeLine = L.polyline([[latD,lngD],[latA,lngA]], {
+                color: 'rgb(4,88,224)', weight: 2.5, opacity: 0.85, dashArray: '8 5'
+            }).addTo(transitMap);
+
+            const km = haversineKm(latD, lngD, latA, lngA);
+            document.getElementById('distance_hidden').value = km;
+            document.getElementById('distance-label').textContent = km.toLocaleString('fr-FR') + ' km (vol d\'oiseau)';
+            document.getElementById('distance-badge').style.display = 'block';
+
+            const bounds = L.latLngBounds([[latD,lngD],[latA,lngA]]);
+            transitMap.fitBounds(bounds, {padding: [50, 50]});
+        } else {
+            document.getElementById('distance_hidden').value = '0';
+            document.getElementById('distance-badge').style.display = 'none';
+        }
+    }
+
+    function openNewTransitModal() {
+        document.getElementById('modal-transit').classList.add('is-open');
+        setTimeout(() => {
+            initTransitMap();
+            transitMap.invalidateSize();
+            updateMap(); // Mettre à jour au cas où les selects ont déjà des valeurs
+        }, 150);
+    }
+
+    function closeNewTransitModal() {
+        document.getElementById('modal-transit').classList.remove('is-open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnNouveau = document.getElementById('btn-nouveau-transit');
+        if (btnNouveau) btnNouveau.addEventListener('click', openNewTransitModal);
+
+        const selD = document.getElementById('ville_depart_id');
+        const selA = document.getElementById('ville_arrivee_id');
+        if (selD) selD.addEventListener('change', updateMap);
+        if (selA) selA.addEventListener('change', updateMap);
+    });
 </script>
 
 </body>

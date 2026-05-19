@@ -62,6 +62,24 @@ Pour garantir la propreté du code et éviter que les fichiers ne deviennent tro
 ### 5. Les Modèles (`app/Models/`)
 *   Ce sont des objets en lecture seule représentant les entités de notre domaine (un Client, une Marchandise, un Transit). Ils encapsulent les données et leurs accesseurs (Getters).
 
+
+---
+
+## 💰 Règles de Calcul & Tarification (GNF)
+
+Les tarifs unitaires et les règles de facturation sont définis selon le type de transport choisi pour le transit (TVA fixe à 20%) :
+
+| Mode de transport | Base de calcul | Tarif unitaire | Formule Brut HT |
+| :--- | :--- | :--- | :--- |
+| **Maritime** | Surface ($m^2$) | **125 000 GNF** / $m^2$ | $Surface \times 125\ 000$ |
+| **Aérien** | Poids ($kg$) | **450 000 GNF** / $kg$ | $Poids \times 450\ 000$ |
+| **Terrestre** | Poids ($kg$) | **35 000 GNF** / $kg$ | $Poids \times 35\ 000$ |
+| **Ferroviaire** | Poids ($kg$) | **18 000 GNF** / $kg$ | $Poids \times 18\ 000$ |
+
+### Formule comptable globale :
+1. **Montant Brut (HT)** = $Base\ de\ calcul \times Tarif\ unitaire$
+2. **Montant TTC** = $Montant\ Brut\ (HT) \times 1.20$
+
 ---
 
 ## 🛠️ Configuration et Installation en Local

@@ -52,7 +52,7 @@ class TransitController extends Controller
         $dbConfig = new Database();
         $pdo = $dbConfig->getConnection();
         $listeClients        = $pdo->query("SELECT id, nom FROM clients ORDER BY nom")->fetchAll();
-        $listeVilles         = $pdo->query("SELECT v.id, v.nom, p.nom AS pays FROM villes v JOIN pays p ON v.pays_id = p.id ORDER BY v.nom")->fetchAll();
+        $listeVilles         = $pdo->query("SELECT v.id, v.nom, v.latitude, v.longitude, p.nom AS pays FROM villes v JOIN pays p ON v.pays_id = p.id ORDER BY v.nom")->fetchAll();
         $listeModesTransport = $pdo->query("SELECT id, nom, type FROM modes_transport ORDER BY nom")->fetchAll();
 
         // Récupération des données opérationnelles et financières via le service.
@@ -150,5 +150,39 @@ class TransitController extends Controller
         $totalHt   = $data['totalHt'];
 
         require_once __DIR__ . '/../Views/factures.php';
+    }
+
+    /**
+     * Affiche l'écran Configuration / Paramètres.
+     */
+    public function settings(): void
+    {
+        try {
+            $data = $this->transitService->getSettingsData();
+            $tvaRate = $data['tvaRate'];
+            $modes = $data['modes'];
+        } catch (Exception $e) {
+            die("Erreur de chargement des paramètres : " . $e->getMessage());
+        }
+
+        require_once __DIR__ . '/../Views/settings.php';
+    }
+
+    /**
+     * Traite la soumission des formulaires de modification des paramètres.
+     */
+    public function updateSettings(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $tvaRate = (float)$_POST['tva_rate'];
+                $tarifs = $_POST['tarifs'] ?? [];
+                
+                $this->transitService->updateSettings($tvaRate, $tarifs);
+                $this->redirect('settings?success=1');
+            } catch (Exception $e) {
+                $this->redirect('settings?error=' . urlencode($e->getMessage()));
+            }
+        }
     }
 }

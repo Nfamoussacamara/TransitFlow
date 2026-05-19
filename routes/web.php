@@ -25,3 +25,9 @@ $router->get('/expeditions', [TransitController::class, 'expeditions']);
 
 // Route d'affichage du registre comptable des Factures.
 $router->get('/factures', [TransitController::class, 'factures']);
+
+// Route d'affichage de la page de paramètres.
+$router->get('/settings', [TransitController::class, 'settings']);
+
+// Route de traitement du formulaire de paramètres.
+$router->post('/settings', [TransitController::class, 'updateSettings']);

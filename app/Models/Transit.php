@@ -19,6 +19,7 @@ class Transit extends Entity implements Facturable
     private DateTimeImmutable $dateArrivee;   // Date de livraison estimée ou réelle.
     private Marchandise $marchandise;         // Marchandise transportée (Objet de type Marchandise).
     private ModeTransport $modeTransport;     // Mode de routage (Objet de type ModeTransport).
+    private int $distance = 0;                // Distance en kilomètres entre les deux villes.
 
     // Constructeur de la classe Transit.
     public function __construct(
@@ -28,18 +29,17 @@ class Transit extends Entity implements Facturable
         DateTimeImmutable $dateArrivee,
         Marchandise $marchandise,
         ModeTransport $modeTransport,
-        ?int $id = null
+        ?int $id = null,
+        int $distance = 0
     ) {
-        // Enregistre l'ID via le constructeur parent.
         parent::__construct($id);
-        
-        // Hydratation de notre objet.
-        $this->villeDepart = $villeDepart;
-        $this->villeArrivee = $villeArrivee;
-        $this->dateDepart = $dateDepart;
-        $this->dateArrivee = $dateArrivee;
-        $this->marchandise = $marchandise;
+        $this->villeDepart   = $villeDepart;
+        $this->villeArrivee  = $villeArrivee;
+        $this->dateDepart    = $dateDepart;
+        $this->dateArrivee   = $dateArrivee;
+        $this->marchandise   = $marchandise;
         $this->modeTransport = $modeTransport;
+        $this->distance      = $distance;
     }
 
     // Récupère la Facture liée au transit.
@@ -158,6 +158,18 @@ class Transit extends Entity implements Facturable
         return $this->modeTransport->getTarifUnitaire();
     }
 
+    // Récupère la distance en kilomètres.
+    public function getDistance(): int
+    {
+        return $this->distance;
+    }
+
+    // Modifie la distance.
+    public function setDistance(int $distance): void
+    {
+        $this->distance = $distance;
+    }
+
     // Calcule dynamiquement le statut actuel du transit en comparant l'heure actuelle avec les dates.
     public function getStatut(): string
     {
@@ -200,6 +212,7 @@ class Transit extends Entity implements Facturable
             'libelle'       => $this->getLibelle(),
             'statut'        => $this->getStatut(),
             'statut_class'  => $this->getStatutClass(),
+            'distance'      => $this->distance,
         ];
     }
 }

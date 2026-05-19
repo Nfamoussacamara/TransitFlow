@@ -69,9 +69,9 @@ class TransitRepository
         $transits = [];
         $query = "
             SELECT 
-                t.id AS transit_id, t.date_depart, t.date_arrivee,
-                vd.id AS vd_id, vd.nom AS vd_nom, pd.id AS pd_id, pd.nom AS pd_nom,
-                va.id AS va_id, va.nom AS va_nom, pa.id AS pa_id, pa.nom AS pa_nom,
+                t.id AS transit_id, t.date_depart, t.date_arrivee, t.distance AS t_distance,
+                vd.id AS vd_id, vd.nom AS vd_nom, vd.latitude AS vd_lat, vd.longitude AS vd_lng, pd.id AS pd_id, pd.nom AS pd_nom,
+                va.id AS va_id, va.nom AS va_nom, va.latitude AS va_lat, va.longitude AS va_lng, pa.id AS pa_id, pa.nom AS pa_nom,
                 m.id AS m_id, m.designation AS m_des, m.poids AS m_pds, m.surface AS m_surf, m.etat AS m_etat,
                 c.id AS c_id, c.nom AS c_nom, c.email AS c_email,
                 mt.id AS mt_id, mt.nom AS mt_nom, mt.type AS mt_type, mt.tarif_unitaire AS mt_tarif,
@@ -252,8 +252,8 @@ class TransitRepository
     public function insertTransit(array $data, int $marchandiseId): int
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO transits (ville_depart_id, ville_arrivee_id, date_depart, date_arrivee, marchandise_id, mode_transport_id)
-            VALUES (:vd, :va, :dd, :da, :mid, :mtid)
+            INSERT INTO transits (ville_depart_id, ville_arrivee_id, date_depart, date_arrivee, marchandise_id, mode_transport_id, distance)
+            VALUES (:vd, :va, :dd, :da, :mid, :mtid, :dist)
         ");
         $stmt->execute([
             ':vd'   => (int)$data['ville_depart_id'],
@@ -262,6 +262,7 @@ class TransitRepository
             ':da'   => date('Y-m-d H:i:s', strtotime($data['date_arrivee'])),
             ':mid'  => $marchandiseId,
             ':mtid' => (int)$data['mode_transport_id'],
+            ':dist' => (int)($data['distance'] ?? 0),
         ]);
         return (int)$this->pdo->lastInsertId();
     }
@@ -273,7 +274,7 @@ class TransitRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE transits 
-            SET ville_depart_id = :vd, ville_arrivee_id = :va, date_depart = :dd, date_arrivee = :da, mode_transport_id = :mtid
+            SET ville_depart_id = :vd, ville_arrivee_id = :va, date_depart = :dd, date_arrivee = :da, mode_transport_id = :mtid, distance = :dist
             WHERE id = :id
         ");
         $stmt->execute([
@@ -282,6 +283,7 @@ class TransitRepository
             ':dd'   => date('Y-m-d H:i:s', strtotime($data['date_depart'])),
             ':da'   => date('Y-m-d H:i:s', strtotime($data['date_arrivee'])),
             ':mtid' => (int)$data['mode_transport_id'],
+            ':dist' => (int)($data['distance'] ?? 0),
             ':id'   => $id
         ]);
     }
@@ -312,9 +314,13 @@ class TransitRepository
     {
         $paysDepart = new Pays($row['pd_nom'], (int)$row['pd_id']);
         $villeDepart = new Ville($row['vd_nom'], $paysDepart, (int)$row['vd_id']);
+        $villeDepart->setLatitude(isset($row['vd_lat']) ? (float)$row['vd_lat'] : null);
+        $villeDepart->setLongitude(isset($row['vd_lng']) ? (float)$row['vd_lng'] : null);
 
         $paysArrivee = new Pays($row['pa_nom'], (int)$row['pa_id']);
         $villeArrivee = new Ville($row['va_nom'], $paysArrivee, (int)$row['va_id']);
+        $villeArrivee->setLatitude(isset($row['va_lat']) ? (float)$row['va_lat'] : null);
+        $villeArrivee->setLongitude(isset($row['va_lng']) ? (float)$row['va_lng'] : null);
 
         $client = new Client($row['c_nom'], $row['c_email'], (int)$row['c_id']);
         $marchandise = new Marchandise(
@@ -329,7 +335,8 @@ class TransitRepository
         $transit = new Transit(
             $villeDepart, $villeArrivee,
             new DateTimeImmutable($row['date_depart']), new DateTimeImmutable($row['date_arrivee']),
-            $marchandise, $modeTransport, (int)$row['transit_id']
+            $marchandise, $modeTransport, (int)$row['transit_id'],
+            (int)($row['t_distance'] ?? 0)
         );
 
         if (isset($row['f_id']) && $row['f_id'] !== null) {
@@ -342,5 +349,34 @@ class TransitRepository
         }
 
         return $transit;
+    }
+
+    /**
+     * Récupère le taux de TVA actuel depuis la table settings.
+     */
+    public function getTvaRate(): float
+    {
+        $stmt = $this->pdo->prepare("SELECT value FROM settings WHERE key_name = 'tva_rate' LIMIT 1");
+        $stmt->execute();
+        $val = $stmt->fetchColumn();
+        return $val !== false ? (float)$val : 0.20;
+    }
+
+    /**
+     * Met à jour le taux de TVA dans la table settings.
+     */
+    public function updateTvaRate(float $rate): void
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO settings (key_name, value) VALUES ('tva_rate', :val) ON DUPLICATE KEY UPDATE value = :val");
+        $stmt->execute([':val' => (string)$rate]);
+    }
+
+    /**
+     * Met à jour le tarif unitaire d'un mode de transport.
+     */
+    public function updateModeTransportTarif(int $id, float $tarif): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE modes_transport SET tarif_unitaire = :tarif WHERE id = :id");
+        $stmt->execute([':tarif' => $tarif, ':id' => $id]);
     }
 }

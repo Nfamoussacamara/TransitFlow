@@ -232,10 +232,51 @@ class TransitService
             $transitId
         );
 
+        $tvaRate = $this->repository->getTvaRate();
         $montantBrut = $this->facturationService->calculerMontantBrut($transitObj);
-        $montantTtc  = $this->facturationService->calculerMontantTtc($transitObj);
+        $montantTtc  = $this->facturationService->calculerMontantTtc($transitObj, $tvaRate);
         $numero      = 'FAC-' . date('Y') . '-' . str_pad((string)($transitId + 10), 4, '0', STR_PAD_LEFT);
 
         $this->repository->insertFacture($numero, $montantBrut, $montantTtc, $transitObj->getBaseCalcul(), $transitId);
+    }
+
+    /**
+     * Récupère le taux de TVA et les tarifs de transport pour la configuration.
+     */
+    public function getSettingsData(): array
+    {
+        $dbConfig = new \App\Config\Database();
+        $pdo = $dbConfig->getConnection();
+        
+        $modes = $pdo->query("SELECT id, nom, type, tarif_unitaire FROM modes_transport ORDER BY nom")->fetchAll();
+        $tvaRate = $this->repository->getTvaRate();
+
+        return [
+            'tvaRate' => $tvaRate,
+            'modes'   => $modes
+        ];
+    }
+
+    /**
+     * Enregistre les nouvelles valeurs de configuration de taxes et tarifs.
+     */
+    public function updateSettings(float $tvaRate, array $tarifs): void
+    {
+        // 1. Validation basique
+        if ($tvaRate < 0) {
+            throw new Exception("Le taux de TVA ne peut pas être négatif.");
+        }
+
+        // 2. Mise à jour de la TVA (conversion de pourcentage en float ex: 20 -> 0.20)
+        $this->repository->updateTvaRate($tvaRate / 100.0);
+
+        // 3. Mise à jour de chaque tarif de transport
+        foreach ($tarifs as $id => $tarif) {
+            $valTarif = (float)$tarif;
+            if ($valTarif < 0) {
+                throw new Exception("Le tarif unitaire ne peut pas être négatif.");
+            }
+            $this->repository->updateModeTransportTarif((int)$id, $valTarif);
+        }
     }
 }
