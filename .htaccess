@@ -1,0 +1,20 @@
+# =========================================================================
+# ROUTAGE SÉCURISÉ (Redirection vers la vitrine publique)
+# =========================================================================
+# Ce fichier est la première ligne de défense de l'application TransitFlow.
+# Il capture TOUTES les requêtes faites au dossier principal (ex: /transit/)
+# et les redirige silencieusement (en arrière-plan) vers le dossier "public/".
+# 
+# Conséquence directe : Il est impossible pour un visiteur d'accéder au 
+# code source (dossier app/) ou aux mots de passe (dossier config/), 
+# assurant ainsi une sécurité maximale.
+
+<IfModule mod_rewrite.c>
+    # 1. On allume le moteur de réécriture d'Apache
+    RewriteEngine On
+    RewriteBase /transit/
+    
+    # 2. Règle magique : on capture tout (.*) et on l'envoie dans public/
+    # Le drapeau [L] signifie "Last" : on arrête le traitement des règles ici.
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
