@@ -50,8 +50,8 @@ class Router {
             // Sinon, on extrait le chemin directement de REQUEST_URI.
             $path = $_SERVER['REQUEST_URI'] ?? '/';
             // Nettoyage de l'URL pour enlever les dossiers d'installation sous Wamp.
-            $path = str_replace('/transit', '', $path);
-            $path = str_replace('/public', '', $path);
+            $path = str_ireplace('/transit', '', $path);
+            $path = str_ireplace('/public', '', $path);
             // On sépare l'URL des paramètres de requête (tout ce qui est après le point d'interrogation '?').
             $path = explode('?', $path)[0];
             

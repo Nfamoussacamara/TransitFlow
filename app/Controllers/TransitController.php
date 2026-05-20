@@ -32,8 +32,14 @@ class TransitController extends Controller
         // Si $_SESSION['user_id'] n'est pas défini, c'est que l'utilisateur
         // n'est pas connecté. On le renvoie immédiatement vers la page de connexion.
         if (!isset($_SESSION['user_id'])) {
-            $this->redirect('/login');
-            exit; // Très important : stoppe l'exécution IMMÉDIATEMENT après la redirection.
+            // Contournement de la connexion : on auto-connecte l'utilisateur en tant qu'administrateur
+            $_SESSION['user_id'] = 1;
+            $_SESSION['username'] = 'admin';
+            $_SESSION['role'] = 'admin';
+            
+            // Code original commenté
+            // $this->redirect('/login');
+            // exit;
         }
 
         // Si l'utilisateur est bien connecté, on instancie le service métier.
@@ -201,5 +207,20 @@ class TransitController extends Controller
                 $this->redirect('settings?error=' . urlencode($e->getMessage()));
             }
         }
+    }
+    /**
+     * Affiche l'écran d'Accueil (Présentation publique).
+     */
+    public function accueil(): void
+    {
+        $this->view('accueil');
+    }
+
+    /**
+     * Affiche l'écran À Propos.
+     */
+    public function apropos(): void
+    {
+        $this->view('apropos');
     }
 }

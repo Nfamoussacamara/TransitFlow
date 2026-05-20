@@ -40,6 +40,12 @@ $router->get('/logout', [AuthController::class, 'logout']);
 // Page d'accueil : Tableau de Bord (Dashboard) avec les statistiques et la carte.
 $router->get('/', [TransitController::class, 'dashboard']);
 
+// Nouvelle page Accueil public (présentation)
+$router->get('/accueil', [TransitController::class, 'accueil']);
+
+// Nouvelle page A propos
+$router->get('/apropos', [TransitController::class, 'apropos']);
+
 // Soumission du formulaire d'ajout ou de modification d'un transit.
 $router->post('/', [TransitController::class, 'storeTransit']);
 
