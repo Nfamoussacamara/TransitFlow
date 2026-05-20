@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 /**
- * TransitFlow - Vue Factures (Grand Livre Comptable)
+ * TransitPro - Vue Factures (Grand Livre Comptable)
  * 
  * Affiche l'ensemble des factures immuables enregistrées en base
- * avec leurs calculs financiers et s'intègre au layout TransitFlow.
+ * avec leurs calculs financiers et s'intègre au layout TransitPro.
  */
 ?>
 <!DOCTYPE html>
@@ -13,7 +13,7 @@ declare(strict_types=1);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransitFlow - Grand Livre Comptable</title>
+    <title>TransitPro - Grand Livre Comptable</title>
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="public/css/style.css?v=2.9">
 </head>
@@ -31,7 +31,7 @@ declare(strict_types=1);
                         <path d="M4 19l8-8 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
                     </svg>
                 </div>
-                <span class="brand-logo-text">Transit<span class="text-accent">Flow</span></span>
+                <span class="brand-logo-text">Transit<span class="text-accent">Pro</span></span>
             </a>
         </div>
         
@@ -78,6 +78,12 @@ declare(strict_types=1);
                     <span id="live-clock">--:--:--</span>
                 </div>
                 <div class="navbar-avatar" title="Profil Administrateur"><span>A</span></div>
+                <!-- Bouton de déconnexion -->
+                <a href="index.php?url=logout" class="navbar-logout" title="Se déconnecter">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                </a>
             </div>
         </nav>
 

@@ -1,7 +1,7 @@
 # =========================================================================
 # ROUTAGE SÉCURISÉ (Redirection vers la vitrine publique)
 # =========================================================================
-# Ce fichier est la première ligne de défense de l'application TransitFlow.
+# Ce fichier est la première ligne de défense de l'application TransitPro.
 # Il capture TOUTES les requêtes faites au dossier principal (ex: /transit/)
 # et les redirige silencieusement (en arrière-plan) vers le dossier "public/".
 # 

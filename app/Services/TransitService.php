@@ -15,7 +15,7 @@ use DateTimeImmutable;
 use Exception;
 
 /**
- * TransitFlow - TransitService
+ * TransitPro - TransitService
  * 
  * Classe responsable de la validation métier et de l'orchestration des flux
  * d'expédition et de facturation (Pattern Service Layer).
@@ -134,11 +134,15 @@ class TransitService
             'etat'        => $data['etat']
         ], $clientId);
 
+        // Résolution dynamique des villes de départ et d'arrivée
+        $data['ville_depart_id'] = $this->repository->resolveDynamicCity((string)$data['ville_depart_id']);
+        $data['ville_arrivee_id'] = $this->repository->resolveDynamicCity((string)$data['ville_arrivee_id']);
+
         // Insertion transit
         $transitId = $this->repository->insertTransit($data, $marchandiseId);
 
-        // Émission de la facture légale
-        $this->generateFactureForTransit($transitId, $data, $marchandiseId, $cleanDesignation);
+        // Émission de la facture légale (avec le client résolu)
+        $this->generateFactureForTransit($transitId, $data, $marchandiseId, $cleanDesignation, $clientId);
     }
 
     /**
@@ -164,6 +168,10 @@ class TransitService
         ], $clientId);
 
         // Mise à jour transit
+        // Résolution dynamique des villes de départ et d'arrivée
+        $data['ville_depart_id'] = $this->repository->resolveDynamicCity((string)$data['ville_depart_id']);
+        $data['ville_arrivee_id'] = $this->repository->resolveDynamicCity((string)$data['ville_arrivee_id']);
+
         $this->repository->updateTransit($transitId, $data);
     }
 
@@ -204,29 +212,51 @@ class TransitService
     /**
      * Calcule et enregistre la facture historique liée au transit.
      */
-    private function generateFactureForTransit(int $transitId, array $data, int $marchandiseId, string $cleanDesignation): void
+    private function generateFactureForTransit(int $transitId, array $data, int $marchandiseId, string $cleanDesignation, int $clientId): void
     {
         $mtRow = $this->repository->findModeTransportRow((int)$data['mode_transport_id']);
         $modeObj = new ModeTransport($mtRow['nom'], $mtRow['type'], (float)$mtRow['tarif_unitaire'], (int)$mtRow['id']);
         
-        $clientTmp = new Client('tmp', 'tmp@tmp.com');
+        // Résolution du client avec ses vraies informations
+        $clientObj = new Client(
+            htmlspecialchars(trim($data['client_nom'])),
+            htmlspecialchars(trim($data['client_email'])),
+            $clientId
+        );
         $marchandiseObj = new Marchandise(
             $cleanDesignation,
             (float)$data['poids'],
             (float)$data['surface'],
             $data['etat'],
-            $clientTmp,
+            $clientObj,
             $marchandiseId
         );
         
         $vdRow = $this->repository->findVilleRow((int)$data['ville_depart_id']);
         $vaRow = $this->repository->findVilleRow((int)$data['ville_arrivee_id']);
 
+        // DÉCOMPOSITION PÉDAGOGIQUE POUR LES DÉBUTANTS :
+        // Au lieu d'imbriquer les instanciations de classes "new" les unes dans les autres,
+        // nous créons d'abord des objets intermédiaires clairs pour la ville de départ et d'arrivée.
+        
+        // 1. Création des objets Pays
+        $paysDepart = new Pays($vdRow['pays_nom'], (int)$vdRow['pays_id']);
+        $paysArrivee = new Pays($vaRow['pays_nom'], (int)$vaRow['pays_id']);
+
+        // 2. Création des objets Ville (avec injection de leurs objets Pays respectifs)
+        $villeDepart = new Ville($vdRow['nom'], $paysDepart, (int)$vdRow['id']);
+        $villeArrivee = new Ville($vaRow['nom'], $paysArrivee, (int)$vaRow['id']);
+
+        // 3. Création des objets de Date immutables
+        $dateDepart = new DateTimeImmutable($data['date_depart']);
+        $dateArrivee = new DateTimeImmutable($data['date_arrivee']);
+
+        // 4. Instanciation finale du Transit principal
         $transitObj = new Transit(
-            new Ville($vdRow['nom'], new Pays($vdRow['pays_nom'], $vdRow['pays_id']), $vdRow['id']),
-            new Ville($vaRow['nom'], new Pays($vaRow['pays_nom'], $vaRow['pays_id']), $vaRow['id']),
-            new DateTimeImmutable($data['date_depart']),
-            new DateTimeImmutable($data['date_arrivee']),
+            $villeDepart,
+            $villeArrivee,
+            $dateDepart,
+            $dateArrivee,
             $marchandiseObj,
             $modeObj,
             $transitId
@@ -245,10 +275,7 @@ class TransitService
      */
     public function getSettingsData(): array
     {
-        $dbConfig = new \App\Config\Database();
-        $pdo = $dbConfig->getConnection();
-        
-        $modes = $pdo->query("SELECT id, nom, type, tarif_unitaire FROM modes_transport ORDER BY nom")->fetchAll();
+        $modes = $this->repository->findAllModesTransport();
         $tvaRate = $this->repository->getTvaRate();
 
         return [
@@ -278,5 +305,29 @@ class TransitService
             }
             $this->repository->updateModeTransportTarif((int)$id, $valTarif);
         }
+    }
+
+    /**
+     * Récupère la liste de tous les clients via le dépôt (Repository).
+     */
+    public function getClientsList(): array
+    {
+        return $this->repository->findAllClients();
+    }
+
+    /**
+     * Récupère la liste de toutes les villes avec leurs coordonnées géographiques et pays via le dépôt.
+     */
+    public function getVillesList(): array
+    {
+        return $this->repository->findAllVilles();
+    }
+
+    /**
+     * Récupère la liste simple de tous les modes de transport via le dépôt.
+     */
+    public function getModesTransportList(): array
+    {
+        return $this->repository->findAllModesTransport();
     }
 }

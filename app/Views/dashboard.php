@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransitFlow - Tableau de Bord</title>
+    <title>TransitPro - Tableau de Bord</title>
     <!-- CSS AOS & Swiper JS CDN -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
@@ -28,7 +28,7 @@
                         <path d="M4 19l8-8 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
                     </svg>
                 </div>
-                <span class="brand-logo-text">Transit<span class="text-accent">Flow</span></span>
+                <span class="brand-logo-text">Transit<span class="text-accent">Pro</span></span>
             </a>
         </div>
         
@@ -88,6 +88,13 @@
                 <div class="navbar-avatar" title="Profil Administrateur">
                     <span>A</span>
                 </div>
+
+                <!-- Bouton de déconnexion -->
+                <a href="index.php?url=logout" class="navbar-logout" title="Se déconnecter">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                </a>
 
             </div>
         </nav>
@@ -484,6 +491,17 @@
             border-top: 1px solid var(--color-border-light);
         }
     }
+    
+    /* Curseur personnalisé "Pin de localisation" pour la carte */
+    .leaflet-container, .leaflet-grab {
+        cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2228%22%20height%3D%2228%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22%23e03434%22%20stroke%3D%22white%22%20stroke-width%3D%221.5%22%20d%3D%22M12%202C8.13%202%205%205.13%205%209c0%205.25%207%2013%207%2013s7-7.75%207-13c0-3.87-3.13-7-7-7zm0%209.5c-1.38%200-2.5-1.12-2.5-2.5s1.12-2.5%202.5-2.5%202.5%201.12%202.5%202.5-1.12%202.5-2.5%202.5z%22%2F%3E%3C%2Fsvg%3E") 14 28, pointer !important;
+    }
+    .leaflet-dragging .leaflet-grab {
+        cursor: grabbing !important;
+    }
+    .leaflet-interactive {
+        cursor: pointer !important;
+    }
 </style>
 
 <!-- =========================================================================
@@ -599,7 +617,7 @@
             <!-- Colonne Droite : Carte Leaflet -->
             <div class="split-map-col">
                 <!-- Badge distance flottant -->
-                <div id="distance-badge" style="display:none; position:absolute; bottom:70px; left:50%; transform:translateX(-50%); z-index:1000; background: rgba(4,88,224,0.92); backdrop-filter:blur(8px); color:white; padding:0.5rem 1.2rem; border-radius:30px; font-weight:700; font-size:0.95rem; box-shadow:0 4px 20px rgba(4,88,224,0.4); white-space:nowrap;">
+                <div id="distance-badge" style="display:none; position:absolute; bottom:70px; left:50%; transform:translateX(-50%); z-index:1000; background: rgba(4,88,224,0.92); backdrop-filter:blur(8px); color:white; padding:0.5rem 1.2rem; border-radius:30px; font-weight:700; font-size:0.95rem; box-shadow:0 4px 20px rgba(4,88,224,0.4); white-space:nowrap; pointer-events: none;">
                     📍 <span id="distance-label">Calculer...</span>
                 </div>
                 <!-- Carte -->
@@ -912,7 +930,7 @@
     function initTransitMap() {
         if (transitMap) return;
         transitMap = L.map('transit-map', { zoomControl: true, attributionControl: false })
-            .setView([10.5, -10.5], 6);
+            .setView([15, 0], 3);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 18
         }).addTo(transitMap);
@@ -935,24 +953,65 @@
             }
         });
 
-        // Clic global sur la carte (pays) pour trouver la ville la plus proche
+        // Clic global sur la carte pour sélectionner n'importe où sur le globe
         transitMap.on('click', function(e) {
-            let nearestCityId = null;
-            let minDistance = Infinity;
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            
+            // Appel à l'API Nominatim (OpenStreetMap) pour le reverse geocoding
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.address) {
+                        const ville = data.address.city || data.address.town || data.address.village || data.address.state || "Inconnu";
+                        const pays = data.address.country || "Inconnu";
+                        
+                        // Chercher si la ville existe déjà dans nos options
+                        let exists = false;
+                        let existingId = null;
+                        const selD = document.getElementById('ville_depart_id');
+                        
+                        Array.from(selD.options).forEach(opt => {
+                            if (opt.text.includes(ville) && opt.text.includes(pays)) {
+                                exists = true;
+                                existingId = opt.value;
+                            }
+                        });
 
-            allCityMarkers.forEach(cm => {
-                const latlng = cm.marker.getLatLng();
-                const dist = haversineKm(e.latlng.lat, e.latlng.lng, latlng.lat, latlng.lng);
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    nearestCityId = cm.id;
-                }
-            });
-
-            // Rayon toléré d'environ 1200km (couvre le pays)
-            if (nearestCityId && minDistance < 1200) {
-                selectCity(nearestCityId);
-            }
+                        if (exists) {
+                            selectCity(existingId);
+                        } else {
+                            // Créer une nouvelle ville dynamique pour le backend
+                            const newVal = `NEW|${ville}|${pays}|${lat}|${lng}`;
+                            const newText = `${ville} (${pays})`;
+                            
+                            // Ajouter l'option aux deux select
+                            const optD = new Option(newText, newVal);
+                            optD.dataset.lat = lat;
+                            optD.dataset.lng = lng;
+                            document.getElementById('ville_depart_id').add(optD);
+                            
+                            const optA = new Option(newText, newVal);
+                            optA.dataset.lat = lat;
+                            optA.dataset.lng = lng;
+                            document.getElementById('ville_arrivee_id').add(optA);
+                            
+                            // Créer un marqueur visuel pour cette nouvelle ville
+                            const newMarker = L.marker([lat, lng], {icon: iconDefault}).addTo(transitMap);
+                            newMarker.bindTooltip(newText, {direction: 'top', offset: [0, -6]});
+                            newMarker.on('click', function(ev) {
+                                L.DomEvent.stopPropagation(ev);
+                                selectCity(newVal);
+                            });
+                            
+                            allCityMarkers.push({ id: newVal, marker: newMarker });
+                            
+                            // Sélectionner cette nouvelle ville
+                            selectCity(newVal);
+                        }
+                    }
+                })
+                .catch(err => console.error("Erreur géocodage:", err));
         });
 
         setTimeout(() => transitMap.invalidateSize(), 200);
@@ -1016,21 +1075,64 @@
             }
         }
 
-        // Tracé + calcul de distance
+        // Tracé + calcul de distance précis
         if (routeLine) transitMap.removeLayer(routeLine);
         
         if (latD !== null && lngD !== null && latA !== null && lngA !== null) {
-            routeLine = L.polyline([[latD,lngD],[latA,lngA]], {
-                color: 'rgb(4,88,224)', weight: 2.5, opacity: 0.85, dashArray: '8 5'
-            }).addTo(transitMap);
-
-            const km = haversineKm(latD, lngD, latA, lngA);
-            document.getElementById('distance_hidden').value = km;
-            document.getElementById('distance-label').textContent = km.toLocaleString('fr-FR') + ' km (vol d\'oiseau)';
+            // Afficher temporairement le badge en mode calcul
+            document.getElementById('distance-label').textContent = 'Calcul de l\'itinéraire...';
             document.getElementById('distance-badge').style.display = 'block';
 
-            const bounds = L.latLngBounds([[latD,lngD],[latA,lngA]]);
-            transitMap.fitBounds(bounds, {padding: [50, 50]});
+            // Appel de l'API de routage OSRM pour obtenir la distance routière exacte
+            fetch(`https://router.project-osrm.org/route/v1/driving/${lngD},${latD};${lngA},${latA}?overview=full&geometries=geojson`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.routes && data.routes.length > 0) {
+                        const route = data.routes[0];
+                        const distanceMeters = route.distance;
+                        const km = Math.round(distanceMeters / 1000);
+                        
+                        // Enregistrer la distance routière réelle et précise
+                        document.getElementById('distance_hidden').value = km;
+                        document.getElementById('distance-label').textContent = km.toLocaleString('fr-FR') + ' km (Itinéraire routier)';
+                        document.getElementById('distance-badge').style.display = 'block';
+
+                        // Dessiner le tracé routier précis sur la carte
+                        if (routeLine) transitMap.removeLayer(routeLine);
+                        const coords = route.geometry.coordinates.map(coord => [coord[1], coord[0]]);
+                        
+                        routeLine = L.polyline(coords, {
+                            color: 'rgb(4,88,224)', 
+                            weight: 3.5, 
+                            opacity: 0.9,
+                            lineJoin: 'round'
+                        }).addTo(transitMap);
+
+                        const bounds = L.latLngBounds(coords);
+                        transitMap.fitBounds(bounds, {padding: [50, 50]});
+                    } else {
+                        throw new Error('Aucun itinéraire trouvé');
+                    }
+                })
+                .catch(err => {
+                    console.warn("Échec du routage précis OSRM, repli sur Haversine :", err);
+                    
+                    // Calcul Haversine avec +15% de coefficient d'ajustement routier réaliste
+                    const straightKm = haversineKm(latD, lngD, latA, lngA);
+                    const estimatedRoadKm = Math.round(straightKm * 1.15);
+                    
+                    document.getElementById('distance_hidden').value = estimatedRoadKm;
+                    document.getElementById('distance-label').textContent = estimatedRoadKm.toLocaleString('fr-FR') + ' km (Estimé)';
+                    document.getElementById('distance-badge').style.display = 'block';
+
+                    if (routeLine) transitMap.removeLayer(routeLine);
+                    routeLine = L.polyline([[latD,lngD],[latA,lngA]], {
+                        color: 'rgb(4,88,224)', weight: 2.5, opacity: 0.85, dashArray: '8 5'
+                    }).addTo(transitMap);
+
+                    const bounds = L.latLngBounds([[latD,lngD],[latA,lngA]]);
+                    transitMap.fitBounds(bounds, {padding: [50, 50]});
+                });
         } else {
             document.getElementById('distance_hidden').value = '0';
             document.getElementById('distance-badge').style.display = 'none';

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransitFlow - Configuration & Paramètres</title>
+    <title>TransitPro - Configuration & Paramètres</title>
     <!-- CSS AOS CDN -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <!-- Notre Design System local -->
@@ -25,7 +25,7 @@
                         <path d="M4 19l8-8 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
                     </svg>
                 </div>
-                <span class="brand-logo-text">Transit<span class="text-accent">Flow</span></span>
+                <span class="brand-logo-text">Transit<span class="text-accent">Pro</span></span>
             </a>
         </div>
         
@@ -80,6 +80,13 @@
                 <div class="navbar-avatar" title="Profil Administrateur">
                     <span>A</span>
                 </div>
+
+                <!-- Bouton de déconnexion -->
+                <a href="index.php?url=logout" class="navbar-logout" title="Se déconnecter">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                </a>
             </div>
         </nav>
 

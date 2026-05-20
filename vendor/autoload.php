@@ -1,6 +1,6 @@
 <?php
 /**
- * TransitFlow - Custom PSR-4 Autoloader
+ * TransitPro - Custom PSR-4 Autoloader
  * 
  * Émule le comportement de Composer pour charger dynamiquement les classes
  * en respectant les conventions PSR-4.

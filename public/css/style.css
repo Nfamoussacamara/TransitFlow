@@ -1,5 +1,5 @@
 /* =========================================================================
-   TransitFlow - Master Design System Stylesheet
+   TransitPro - Master Design System Stylesheet
    ========================================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap');
@@ -177,6 +177,27 @@ body {
 .navbar-avatar:hover {
     transform: scale(1.08);
     box-shadow: 0 0 0 5px rgba(224, 52, 52, 0.2);
+}
+
+/* Bouton de déconnexion */
+.navbar-logout {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--color-text-muted);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: var(--transition-smooth);
+}
+
+.navbar-logout:hover {
+    background: rgba(224, 52, 52, 0.1);
+    color: #e03434 !important;
+    border-color: rgba(224, 52, 52, 0.2);
 }
 
 /* =========================================================================

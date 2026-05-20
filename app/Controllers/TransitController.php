@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Core\Controller;              // Classe de base des contrôleurs.
-use App\Config\Database;              // Connexion PDO pour charger les listes statiques simples.
 use App\Services\TransitService;      // Service gérant la logique et les accès complexes.
 use Exception;                        // Gestion des erreurs.
 
 /**
- * TransitFlow - TransitController
+ * TransitPro - TransitController
  * 
  * Contrôleur principal allégé. Il orchestre les requêtes HTTP,
  * délègue la logique métier à TransitService et appelle les vues.
@@ -21,22 +20,36 @@ class TransitController extends Controller
 
     public function __construct()
     {
+        // On démarre la session PHP si elle n'est pas déjà active.
+        // La session permet de mémoriser des informations entre les pages
+        // (comme "qui est connecté ?") sans les repasser à chaque requête.
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // FILTRE DE SÉCURITÉ GLOBAL : toutes les méthodes de ce contrôleur
+        // sont protégées par ce seul bloc dans le constructeur.
+        // Si $_SESSION['user_id'] n'est pas défini, c'est que l'utilisateur
+        // n'est pas connecté. On le renvoie immédiatement vers la page de connexion.
+        if (!isset($_SESSION['user_id'])) {
+            $this->redirect('/login');
+            exit; // Très important : stoppe l'exécution IMMÉDIATEMENT après la redirection.
+        }
+
+        // Si l'utilisateur est bien connecté, on instancie le service métier.
         $this->transitService = new TransitService();
     }
 
     /**
      * Action principale : Affiche le tableau de bord (dashboard).
+     * 
+     * URL associée : GET /
+     * Accès protégé : seuls les utilisateurs connectés peuvent y accéder (filtré dans __construct).
      */
     public function dashboard(): void
     {
-        // Initialisation automatique du schéma physique de la base si nécessaire.
-        try {
-            $this->transitService->initializeDatabase();
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
-
-        // --- SECTION : INTERCEPTEUR DE SUPPRESSION ---
+        // --- INTERCEPTION DE LA SUPPRESSION D'UN TRANSIT ---
+        // Si l'URL contient ?action=supprimer_transit&id=X, on supprime le transit avant d'afficher la page.
         if (isset($_GET['action']) && $_GET['action'] === 'supprimer_transit' && isset($_GET['id'])) {
             try {
                 $this->transitService->deleteTransit((int)$_GET['id']);
@@ -49,11 +62,10 @@ class TransitController extends Controller
         }
 
         // --- CHARGEMENT DES DONNÉES DE CONFIGURATION POUR LES FORMULAIRES ---
-        $dbConfig = new Database();
-        $pdo = $dbConfig->getConnection();
-        $listeClients        = $pdo->query("SELECT id, nom FROM clients ORDER BY nom")->fetchAll();
-        $listeVilles         = $pdo->query("SELECT v.id, v.nom, v.latitude, v.longitude, p.nom AS pays FROM villes v JOIN pays p ON v.pays_id = p.id ORDER BY v.nom")->fetchAll();
-        $listeModesTransport = $pdo->query("SELECT id, nom, type FROM modes_transport ORDER BY nom")->fetchAll();
+        // On récupère ces listes proprement en passant par le Service Layer pour respecter le pattern MVC et éviter le SQL direct ici.
+        $listeClients        = $this->transitService->getClientsList();
+        $listeVilles         = $this->transitService->getVillesList();
+        $listeModesTransport = $this->transitService->getModesTransportList();
 
         // Récupération des données opérationnelles et financières via le service.
         try {
@@ -111,12 +123,10 @@ class TransitController extends Controller
      */
     public function expeditions(): void
     {
-        $dbConfig = new Database();
-        $pdo = $dbConfig->getConnection();
-        
-        $listeClients        = $pdo->query("SELECT id, nom FROM clients ORDER BY nom")->fetchAll();
-        $listeVilles         = $pdo->query("SELECT v.id, v.nom, p.nom AS pays FROM villes v JOIN pays p ON v.pays_id = p.id ORDER BY v.nom")->fetchAll();
-        $listeModesTransport = $pdo->query("SELECT id, nom, type FROM modes_transport ORDER BY nom")->fetchAll();
+        // On récupère les listes de configuration via le Service Layer
+        $listeClients        = $this->transitService->getClientsList();
+        $listeVilles         = $this->transitService->getVillesList();
+        $listeModesTransport = $this->transitService->getModesTransportList();
 
         try {
             $transits = $this->transitService->getExpeditionsData();
@@ -124,7 +134,12 @@ class TransitController extends Controller
             die("Erreur de chargement des expéditions : " . $e->getMessage());
         }
         
-        require_once __DIR__ . '/../Views/expeditions.php';
+        $this->view('expeditions', [
+            'listeClients'        => $listeClients,
+            'listeVilles'         => $listeVilles,
+            'listeModesTransport' => $listeModesTransport,
+            'transits'            => $transits
+        ]);
     }
 
     /**
@@ -132,12 +147,10 @@ class TransitController extends Controller
      */
     public function factures(): void
     {
-        $dbConfig = new Database();
-        $pdo = $dbConfig->getConnection();
-        
-        $listeClients        = $pdo->query("SELECT id, nom FROM clients ORDER BY nom")->fetchAll();
-        $listeVilles         = $pdo->query("SELECT v.id, v.nom, p.nom AS pays FROM villes v JOIN pays p ON v.pays_id = p.id ORDER BY v.nom")->fetchAll();
-        $listeModesTransport = $pdo->query("SELECT id, nom, type FROM modes_transport ORDER BY nom")->fetchAll();
+        // On récupère les listes de configuration via le Service Layer
+        $listeClients        = $this->transitService->getClientsList();
+        $listeVilles         = $this->transitService->getVillesList();
+        $listeModesTransport = $this->transitService->getModesTransportList();
 
         try {
             $data = $this->transitService->getFacturesData();
@@ -145,11 +158,14 @@ class TransitController extends Controller
             die("Erreur de chargement des factures : " . $e->getMessage());
         }
         
-        $factures = $data['factures'];
-        $totalTtc  = $data['totalTtc'];
-        $totalHt   = $data['totalHt'];
-
-        require_once __DIR__ . '/../Views/factures.php';
+        $this->view('factures', [
+            'listeClients'        => $listeClients,
+            'listeVilles'         => $listeVilles,
+            'listeModesTransport' => $listeModesTransport,
+            'factures'            => $data['factures'],
+            'totalTtc'            => $data['totalTtc'],
+            'totalHt'             => $data['totalHt']
+        ]);
     }
 
     /**
@@ -159,13 +175,14 @@ class TransitController extends Controller
     {
         try {
             $data = $this->transitService->getSettingsData();
-            $tvaRate = $data['tvaRate'];
-            $modes = $data['modes'];
         } catch (Exception $e) {
             die("Erreur de chargement des paramètres : " . $e->getMessage());
         }
 
-        require_once __DIR__ . '/../Views/settings.php';
+        $this->view('settings', [
+            'tvaRate' => $data['tvaRate'],
+            'modes'   => $data['modes']
+        ]);
     }
 
     /**

@@ -1,6 +1,6 @@
-# 🏛️ Architecture MVC de TransitFlow
+# 🏛️ Architecture MVC de TransitPro
 
-Ce document explique la structure des dossiers de l'application TransitFlow. L'architecture repose sur le patron de conception **Modèle-Vue-Contrôleur (MVC)** et suit les standards de l'industrie (similaire à Laravel ou Symfony) pour garantir une **sécurité absolue** et une **séparation des rôles**.
+Ce document explique la structure des dossiers de l'application TransitPro. L'architecture repose sur le patron de conception **Modèle-Vue-Contrôleur (MVC)** et suit les standards de l'industrie (similaire à Laravel ou Symfony) pour garantir une **sécurité absolue** et une **séparation des rôles**.
 
 ## 📁 Arborescence du Projet
 

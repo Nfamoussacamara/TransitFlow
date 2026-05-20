@@ -11,7 +11,7 @@ use PDOException;
 use Exception;
 
 /**
- * TransitFlow - Gestion de la connexion Base de Données
+ * TransitPro - Gestion de la connexion Base de Données
  * 
  * Initialise et configure de manière transparente la connexion PDO vers MySQL.
  * Gère également la création automatique de la base de données si celle-ci n'existe pas encore.

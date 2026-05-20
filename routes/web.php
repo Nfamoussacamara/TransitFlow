@@ -1,33 +1,56 @@
 <?php
 
-// Importation du contrôleur principal qui va orchestrer les pages.
-use App\Controllers\TransitController;
+// Importation des contrôleurs utilisés dans les routes.
+use App\Controllers\TransitController; // Gère le Dashboard, les Expéditions, les Factures, les Paramètres.
+use App\Controllers\AuthController;    // Gère la Connexion et la Déconnexion.
 
 /**
  * Fichier de routage de l'application (routes/web.php)
- * 
- * Il déclare l'ensemble des chemins d'URL accessibles par l'utilisateur et les associe
- * aux méthodes correspondantes du TransitController.
- * 
- * Syntaxe :
- * - $router->get('/url', [Controleur::class, 'nomMethode']) : pour l'affichage de pages.
- * - $router->post('/url', [Controleur::class, 'nomMethode']) : pour le traitement de formulaires.
+ *
+ * C'est ici que l'on déclare TOUTES les URLs accessibles par l'utilisateur.
+ * Chaque route associe :
+ *   - une méthode HTTP (GET pour afficher, POST pour soumettre un formulaire)
+ *   - un chemin d'URL (ex: '/login')
+ *   - un contrôleur et une méthode à exécuter (ex: AuthController::showLogin)
+ *
+ * Exemple de lecture :
+ *   $router->get('/login', [AuthController::class, 'showLogin']);
+ *   Signifie : "Quand l'utilisateur visite /login en GET, appeler la méthode showLogin() de AuthController."
  */
 
-// Route d'affichage du Tableau de Bord (Dashboard) principal.
+// =============================================
+// ROUTES D'AUTHENTIFICATION (Publiques)
+// Ces routes sont accessibles SANS être connecté.
+// =============================================
+
+// Affiche le formulaire de connexion (page login.php).
+$router->get('/login', [AuthController::class, 'showLogin']);
+
+// Reçoit les données du formulaire de connexion (username + password) et les vérifie.
+$router->post('/login', [AuthController::class, 'login']);
+
+// Déconnecte l'utilisateur et le renvoie vers la page de connexion.
+$router->get('/logout', [AuthController::class, 'logout']);
+
+// =============================================
+// ROUTES PROTÉGÉES (Nécessitent une connexion)
+// L'accès est filtré automatiquement dans le constructeur de TransitController.
+// =============================================
+
+// Page d'accueil : Tableau de Bord (Dashboard) avec les statistiques et la carte.
 $router->get('/', [TransitController::class, 'dashboard']);
 
-// Route POST recevant la soumission du formulaire d'ajout ou de modification de transit.
+// Soumission du formulaire d'ajout ou de modification d'un transit.
 $router->post('/', [TransitController::class, 'storeTransit']);
 
-// Route d'affichage du registre des Expéditions (liste complète).
+// Page listant toutes les expéditions de marchandises.
 $router->get('/expeditions', [TransitController::class, 'expeditions']);
 
-// Route d'affichage du registre comptable des Factures.
+// Page listant toutes les factures générées.
 $router->get('/factures', [TransitController::class, 'factures']);
 
-// Route d'affichage de la page de paramètres.
+// Page des paramètres (affichage du formulaire de configuration des tarifs et taxes).
 $router->get('/settings', [TransitController::class, 'settings']);
 
-// Route de traitement du formulaire de paramètres.
+// Soumission du formulaire de paramètres (enregistrement des tarifs et de la TVA).
 $router->post('/settings', [TransitController::class, 'updateSettings']);

@@ -10,7 +10,7 @@ namespace App\Services;
 use App\Interfaces\Facturable;
 
 /**
- * TransitFlow - Service FacturationService
+ * TransitPro - Service FacturationService
  * 
  * Classe responsable de la logique purement financière de l'application.
  * Elle est découplée des détails du modèle de base de données.

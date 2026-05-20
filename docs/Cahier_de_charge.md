@@ -932,7 +932,7 @@ Pour assurer une expérience utilisateur moderne et fluide, le système de trans
 
 ### 17.2. Identité Visuelle : Emplacement & Spécification du Logo
 
-Pour asseoir la légitimité de l'application, un espace réservé de premier choix est alloué au **Logo de la Marque** (baptisée **TransitFlow**). Cet emplacement garantit une lisibilité maximale et une reconnaissance instantanée, que ce soit sur ordinateur ou sur mobile.
+Pour asseoir la légitimité de l'application, un espace réservé de premier choix est alloué au **Logo de la Marque** (baptisée **TransitPro**). Cet emplacement garantit une lisibilité maximale et une reconnaissance instantanée, que ce soit sur ordinateur ou sur mobile.
 
 #### A. Emplacement Structurel dans la Mise en Page (Layout Pages)
 - **Mise en page Desktop (Sidebar Layout)** : Le logo est ancré en **haut à gauche** dans l'en-tête de la barre de navigation latérale fixe (`.sidebar-header`). Il bénéficie d'une marge de respiration de `1.5rem` autour du bloc.
@@ -942,7 +942,7 @@ Pour asseoir la légitimité de l'application, un espace réservé de premier ch
 ```html
 <div class="brand-logo-container">
     <a href="index.php" class="brand-logo-link">
-        <!-- Icône Logo stylisée (TransitFlow Arrow/Cargo) -->
+        <!-- Icône Logo stylisée (TransitPro Arrow/Cargo) -->
         <div class="brand-logo-mark">
             <svg viewBox="0 0 24 24" class="logo-svg">
                 <path d="M4 15l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>

@@ -1,5 +1,5 @@
 {
-    "name": "guinea/transitflow",
+    "name": "guinea/TransitPro",
     "description": "Plateforme logistique pour la République de Guinée",
     "_explications": {
         "role_du_fichier": "Gère l'identité du projet et orchestre le chargement automatique des classes (Autoloader).",

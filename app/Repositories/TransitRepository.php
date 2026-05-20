@@ -143,6 +143,51 @@ class TransitRepository
     }
 
     /**
+     * Résout ou crée une ville (et son pays) dynamiquement à partir d'une chaîne NEW|City|Country|Lat|Lng
+     */
+    public function resolveDynamicCity(string $cityData): int
+    {
+        if (!str_starts_with($cityData, 'NEW|')) {
+            return (int)$cityData;
+        }
+
+        $parts = explode('|', $cityData);
+        $nomVille = htmlspecialchars(trim($parts[1] ?? 'Inconnu'));
+        $nomPays = htmlspecialchars(trim($parts[2] ?? 'Inconnu'));
+        $lat = isset($parts[3]) && is_numeric($parts[3]) ? (float)$parts[3] : null;
+        $lng = isset($parts[4]) && is_numeric($parts[4]) ? (float)$parts[4] : null;
+
+        // 1. Gérer le Pays
+        $stmtP = $this->pdo->prepare("SELECT id FROM pays WHERE nom = :nom LIMIT 1");
+        $stmtP->execute([':nom' => $nomPays]);
+        $paysId = $stmtP->fetchColumn();
+
+        if (!$paysId) {
+            $stmtPIns = $this->pdo->prepare("INSERT INTO pays (nom) VALUES (:nom)");
+            $stmtPIns->execute([':nom' => $nomPays]);
+            $paysId = (int)$this->pdo->lastInsertId();
+        }
+
+        // 2. Gérer la Ville
+        $stmtV = $this->pdo->prepare("SELECT id FROM villes WHERE nom = :nom AND pays_id = :pid LIMIT 1");
+        $stmtV->execute([':nom' => $nomVille, ':pid' => $paysId]);
+        $villeId = $stmtV->fetchColumn();
+
+        if (!$villeId) {
+            $stmtVIns = $this->pdo->prepare("INSERT INTO villes (nom, pays_id, latitude, longitude) VALUES (:nom, :pid, :lat, :lng)");
+            $stmtVIns->execute([
+                ':nom' => $nomVille, 
+                ':pid' => $paysId,
+                ':lat' => $lat,
+                ':lng' => $lng
+            ]);
+            $villeId = (int)$this->pdo->lastInsertId();
+        }
+
+        return (int)$villeId;
+    }
+
+    /**
      * Recherche un client par email.
      */
     public function findClientIdByEmail(string $email): ?int
@@ -367,8 +412,11 @@ class TransitRepository
      */
     public function updateTvaRate(float $rate): void
     {
-        $stmt = $this->pdo->prepare("INSERT INTO settings (key_name, value) VALUES ('tva_rate', :val) ON DUPLICATE KEY UPDATE value = :val");
-        $stmt->execute([':val' => (string)$rate]);
+        $stmt = $this->pdo->prepare("INSERT INTO settings (key_name, value) VALUES ('tva_rate', :val1) ON DUPLICATE KEY UPDATE value = :val2");
+        $stmt->execute([
+            ':val1' => (string)$rate,
+            ':val2' => (string)$rate
+        ]);
     }
 
     /**
@@ -378,5 +426,34 @@ class TransitRepository
     {
         $stmt = $this->pdo->prepare("UPDATE modes_transport SET tarif_unitaire = :tarif WHERE id = :id");
         $stmt->execute([':tarif' => $tarif, ':id' => $id]);
+    }
+
+    /**
+     * Récupère la liste de tous les clients triés par nom.
+     */
+    public function findAllClients(): array
+    {
+        return $this->pdo->query("SELECT id, nom FROM clients ORDER BY nom")->fetchAll();
+    }
+
+    /**
+     * Récupère la liste de toutes les villes avec le nom du pays associé.
+     */
+    public function findAllVilles(): array
+    {
+        return $this->pdo->query("
+            SELECT v.id, v.nom, v.latitude, v.longitude, p.nom AS pays 
+            FROM villes v 
+            JOIN pays p ON v.pays_id = p.id 
+            ORDER BY v.nom
+        ")->fetchAll();
+    }
+
+    /**
+     * Récupère la liste de tous les modes de transport triés par nom.
+     */
+    public function findAllModesTransport(): array
+    {
+        return $this->pdo->query("SELECT id, nom, type, tarif_unitaire FROM modes_transport ORDER BY nom")->fetchAll();
     }
 }

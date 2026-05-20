@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * TransitFlow - Point d'Entrée Principal et Fallback (Racine du Projet)
+ * TransitPro - Point d'Entrée Principal et Fallback (Racine du Projet)
  * 
  * Si le module Apache "mod_rewrite" n'est pas configuré ou activé sur WampServer,
  * l'URL de base pointera vers ce fichier racine au lieu du sous-dossier "public/".
