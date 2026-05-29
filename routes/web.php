@@ -30,6 +30,9 @@ $router->get('/', [MainController::class, 'index']);
 // Route vers la page "À Propos".
 $router->get('/about', [MainController::class, 'about']);
 
+// Route vers la page "Contact".
+$router->get('/contact', [MainController::class, 'contact']);
+
 // =============================================
 // ROUTES D'AUTHENTIFICATION (Publiques)
 // =============================================

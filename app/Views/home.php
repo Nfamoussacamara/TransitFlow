@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TransitPro — Solutions Logistiques & Transit de Marchandises</title>
-    
+
     <!-- Meta SEO -->
-    <meta name="description" content="TransitPro est la solution leader pour la gestion simplifiée de vos flux logistiques, transits internationaux et facturation automatisée.">
-    
+    <meta name="description"
+        content="TransitPro est la solution leader pour la gestion simplifiée de vos flux logistiques, transits internationaux et facturation automatisée.">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Styles -->
     <link rel="stylesheet" href="/transit/public/css/style.css">
-    
+
     <style>
         /* Styles spécifiques à la Landing Page pour un effet WOW immédiat */
         :root {
@@ -226,8 +230,15 @@
             backdrop-filter: blur(10px);
         }
 
-        .btn-cta:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .btn-cta-outline:hover { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; }
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-cta-outline:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffffff;
+        }
 
         /* Features Section */
         .features {
@@ -274,7 +285,8 @@
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 25px;
             margin-top: 50px;
-            text-align: left; /* Alignement interne des cartes comme au dashboard */
+            text-align: left;
+            /* Alignement interne des cartes comme au dashboard */
         }
 
         /* Réajustement tailles pour le contexte Landing Page public */
@@ -317,7 +329,7 @@
             justify-content: center;
             font-size: 2rem;
             margin: 0 auto 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             color: #0458e0;
         }
 
@@ -441,29 +453,51 @@
 
         /* Animations */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero-actions { flex-direction: column; }
+            .nav-links {
+                display: none;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
+
 <body>
-    
+
     <nav class="landing-top-nav">
         <a href="/transit/" class="landing-logo">
             TRANSIT<span class="accent">PRO</span>
         </a>
         <div class="nav-links" style="display: flex; gap: 2rem; align-items: center; justify-content: center;">
-            <a href="#services" class="nav-link">Services</a>
+            <a href="/transit/#services" class="nav-link">Services</a>
             <a href="/transit/about" class="nav-link">À Propos</a>
+            <a href="/transit/contact" class="nav-link">Contact</a>
         </div>
         <div style="display: flex; justify-content: flex-end;">
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -476,16 +510,18 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="hero" style="background-image: url('/transit/public/images/hero-bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <section class="hero"
+            style="background-image: url('/transit/public/images/hero-bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
             <div class="hero-overlay"></div>
-            
+
             <div class="hero-content">
                 <!-- Badge enlevé -->
 
                 <h1>Simplifiez vos flux de transit internationaux.</h1>
 
                 <p>
-                    Une plateforme intelligente et intégrée pour le pilotage en temps réel, la facturation automatique et la gestion de vos expéditions logistiques.
+                    Une plateforme intelligente et intégrée pour le pilotage en temps réel, la facturation automatique
+                    et la gestion de vos expéditions logistiques.
                 </p>
 
                 <div class="hero-features-bar">
@@ -508,18 +544,26 @@
         </section>
 
         <!-- Partners Scrolling Bar -->
-        <section class="partners-bar" style="background: #ffffff; padding: 40px 0; border-bottom: 2px solid #e2e8f0; overflow: hidden; position: relative;">
+        <section class="partners-bar"
+            style="background: #ffffff; padding: 40px 0; border-bottom: 2px solid #e2e8f0; overflow: hidden; position: relative;">
             <style>
                 @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
+                    0% {
+                        transform: translateX(0);
+                    }
+
+                    100% {
+                        transform: translateX(-50%);
+                    }
                 }
+
                 .marquee-track {
                     display: flex;
                     width: max-content;
                     animation: marquee 30s linear infinite;
                     gap: 80px;
                 }
+
                 .partner-item {
                     font-weight: 800;
                     color: #94a3b8;
@@ -531,9 +575,11 @@
                     gap: 10px;
                     transition: color 0.3s ease;
                 }
+
                 .partner-item:hover {
                     color: #0458e0;
                 }
+
                 .partner-tag {
                     font-size: 0.7rem;
                     background: #f1f5f9;
@@ -554,7 +600,7 @@
                 <div class="partner-item">CGC <span class="partner-tag">GUINÉE</span></div>
                 <div class="partner-item">BOLLORÉ <span class="partner-tag">AFRICA</span></div>
                 <div class="partner-item">ANAM <span class="partner-tag">GUINÉE</span></div>
-                
+
                 <!-- Duplicate for seamless loop -->
                 <div class="partner-item">PAC <span class="partner-tag">GUINÉE</span></div>
                 <div class="partner-item">MAERSK <span class="partner-tag">GLOBAL</span></div>
@@ -572,30 +618,37 @@
         <section class="features" id="services">
             <span class="section-tag">Pourquoi nous choisir ?</span>
             <h2 class="section-title">Une expertise logistique complète</h2>
-            
+
             <div class="features-grid">
                 <div class="dashboard-card card-blue-royal">
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Multi-Modal Solutions</h3>
-                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Que ce soit par voie maritime, aérienne, terrestre ou ferroviaire, nous optimisons vos trajets pour une efficacité maximale.</p>
+                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">
+                            Multi-Modal Solutions</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Que ce soit par voie maritime,
+                            aérienne, terrestre ou ferroviaire, nous optimisons vos trajets pour une efficacité
+                            maximale.</p>
                     </div>
                 </div>
                 <div class="dashboard-card card-blue-cyan">
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Facturation Automatisée</h3>
-                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Générez vos factures instantanément selon les tarifs réglementés et envoyez-les directement à vos clients.</p>
+                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">
+                            Facturation Automatisée</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Générez vos factures
+                            instantanément selon les tarifs réglementés et envoyez-les directement à vos clients.</p>
                     </div>
                 </div>
                 <div class="dashboard-card card-blue-indigo">
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Espace Client Sécurisé</h3>
-                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Offrez à vos clients un accès transparent à leurs expéditions et documents comptables dans un espace dédié.</p>
+                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Espace
+                            Client Sécurisé</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Offrez à vos clients un accès
+                            transparent à leurs expéditions et documents comptables dans un espace dédié.</p>
                     </div>
                 </div>
             </div>
@@ -666,16 +719,24 @@
         <section class="testimonials-section" style="padding: 100px 5%; text-align: center; background: #ffffff;">
             <span class="section-tag">Preuve Sociale</span>
             <h2 class="section-title">La confiance de nos partenaires</h2>
-            
-            <div class="testimonials-container" style="overflow: hidden; padding: 40px 0; position: relative; width: 100%; margin-top: 40px;">
-                <div class="testimonials-track" id="testimonialTrack" style="display: flex; gap: 30px; transition: transform 0.6s ease-in-out;">
+
+            <div class="testimonials-container"
+                style="overflow: hidden; padding: 40px 0; position: relative; width: 100%; margin-top: 40px;">
+                <div class="testimonials-track" id="testimonialTrack"
+                    style="display: flex; gap: 30px; transition: transform 0.6s ease-in-out;">
                     <!-- Card 1 : Amadou Barry -->
-                    <div class="dashboard-card" style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
+                    <div class="dashboard-card"
+                        style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
                         <div class="card-body">
-                            <p style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">"TransitPro a révolutionné notre gestion import-export à Conakry. La transparence est clé."</p>
+                            <p
+                                style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                                "TransitPro a révolutionné notre gestion import-export à Conakry. La transparence est
+                                clé."</p>
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
-                                <div class="author-avatar" style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #0458e0;">
-                                    <img src="/transit/public/images/testimonials/man-guinea.jpg" alt="Amadou Barry" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="author-avatar"
+                                    style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #0458e0;">
+                                    <img src="/transit/public/images/testimonials/man-guinea.jpg" alt="Amadou Barry"
+                                        style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
                                     <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Amadou Barry</h4>
@@ -686,12 +747,18 @@
                     </div>
 
                     <!-- Card 2 : Marc Lefebvre -->
-                    <div class="dashboard-card" style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
+                    <div class="dashboard-card"
+                        style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
                         <div class="card-body">
-                            <p style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">"The automated billing and tracking transparency is world-class. Seamless and trust-based."</p>
+                            <p
+                                style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                                "The automated billing and tracking transparency is world-class. Seamless and
+                                trust-based."</p>
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
-                                <div class="author-avatar" style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #06b6d4;">
-                                    <img src="/transit/public/images/testimonials/man-europe.jpg" alt="Marc Lefebvre" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="author-avatar"
+                                    style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #06b6d4;">
+                                    <img src="/transit/public/images/testimonials/man-europe.jpg" alt="Marc Lefebvre"
+                                        style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
                                     <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Marc Lefebvre</h4>
@@ -702,15 +769,22 @@
                     </div>
 
                     <!-- Card 3 : Fatoumata Diallo -->
-                    <div class="dashboard-card" style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
+                    <div class="dashboard-card"
+                        style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
                         <div class="card-body">
-                            <p style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">"En tant qu'entrepreneuse, j'ai besoin de fiabilité. TransitPro m'offre cette sécurité."</p>
+                            <p
+                                style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                                "En tant qu'entrepreneuse, j'ai besoin de fiabilité. TransitPro m'offre cette sécurité."
+                            </p>
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
-                                <div class="author-avatar" style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #6366f1;">
-                                    <img src="/transit/public/images/testimonials/woman-guinea.jpg" alt="Fatoumata Diallo" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="author-avatar"
+                                    style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #6366f1;">
+                                    <img src="/transit/public/images/testimonials/woman-guinea.jpg"
+                                        alt="Fatoumata Diallo" style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
-                                    <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Fatoumata Diallo</h4>
+                                    <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Fatoumata Diallo
+                                    </h4>
                                     <p style="font-size: 0.8rem; color: #64748b;">Fondctrice, Conakry Mode</p>
                                 </div>
                             </div>
@@ -718,12 +792,18 @@
                     </div>
 
                     <!-- Card 4 : Ousmane Bah -->
-                    <div class="dashboard-card" style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
+                    <div class="dashboard-card"
+                        style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
                         <div class="card-body">
-                            <p style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">"Un service exemplaire. La rapidité du traitement des documents est impressionnante."</p>
+                            <p
+                                style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                                "Un service exemplaire. La rapidité du traitement des documents est impressionnante."
+                            </p>
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
-                                <div class="author-avatar" style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #f59e0b;">
-                                    <img src="/transit/public/images/testimonials/man-guinea-2.jpg" alt="Ousmane Bah" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="author-avatar"
+                                    style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #f59e0b;">
+                                    <img src="/transit/public/images/testimonials/man-guinea-2.jpg" alt="Ousmane Bah"
+                                        style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
                                     <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Ousmane Bah</h4>
@@ -734,12 +814,17 @@
                     </div>
 
                     <!-- Card 5 : Sarah Wilson -->
-                    <div class="dashboard-card" style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
+                    <div class="dashboard-card"
+                        style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
                         <div class="card-body">
-                            <p style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">"TransitPro provides the most reliable dashboard I've used for trade operations."</p>
+                            <p
+                                style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                                "TransitPro provides the most reliable dashboard I've used for trade operations."</p>
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
-                                <div class="author-avatar" style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #ec4899;">
-                                    <img src="/transit/public/images/testimonials/woman-uk.jpg" alt="Sarah Wilson" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="author-avatar"
+                                    style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #ec4899;">
+                                    <img src="/transit/public/images/testimonials/woman-uk.jpg" alt="Sarah Wilson"
+                                        style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
                                     <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Sarah Wilson</h4>
@@ -750,15 +835,22 @@
                     </div>
 
                     <!-- Card 6 : Mamadou Diallo -->
-                    <div class="dashboard-card" style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
+                    <div class="dashboard-card"
+                        style="min-width: 323px; width: 323px; height: 193px; flex-shrink: 0; padding: 24px;">
                         <div class="card-body">
-                            <p style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">"L'interface est intuitive et le support client est exceptionnel. Un vrai partenaire."</p>
+                            <p
+                                style="font-style: italic; color: #334155; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">
+                                "L'interface est intuitive et le support client est exceptionnel. Un vrai partenaire."
+                            </p>
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
-                                <div class="author-avatar" style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #10b981;">
-                                    <img src="/transit/public/images/testimonials/man-guinea-3.jpg" alt="Mamadou Diallo" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="author-avatar"
+                                    style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #10b981;">
+                                    <img src="/transit/public/images/testimonials/man-guinea-3.jpg" alt="Mamadou Diallo"
+                                        style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
-                                    <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Mamadou Diallo</h4>
+                                    <h4 style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">Mamadou Diallo
+                                    </h4>
                                     <p style="font-size: 0.8rem; color: #64748b;">CEO, WestAfrica Logistics</p>
                                 </div>
                             </div>
@@ -772,37 +864,49 @@
         <section class="process-section" style="background: #f1f5f9;">
             <span class="section-tag">Notre Méthode</span>
             <h2 class="section-title">Comment ça marche ?</h2>
-            <div class="process-grid" style="display: grid; grid-template-columns: repeat(auto-fit, 323px); justify-content: center; gap: 30px;">
+            <div class="process-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, 323px); justify-content: center; gap: 30px;">
                 <div class="dashboard-card card-blue-royal" style="width: 323px; height: 193px; padding: 24px;">
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">1. Réservation</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Enregistrez vos marchandises et choisissez votre transport en quelques clics.</p>
+                        <h3 class="card-title"
+                            style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">1.
+                            Réservation</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">Enregistrez vos marchandises et choisissez votre
+                            transport en quelques clics.</p>
                     </div>
                 </div>
                 <div class="dashboard-card card-blue-cyan" style="width: 323px; height: 193px; padding: 24px;">
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">2. Transit</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Nous prenons en charge la logistique et vous suivez l'avancement en temps réel.</p>
+                        <h3 class="card-title"
+                            style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">2.
+                            Transit</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">Nous prenons en charge la logistique et vous
+                            suivez l'avancement en temps réel.</p>
                     </div>
                 </div>
                 <div class="dashboard-card card-blue-indigo" style="width: 323px; height: 193px; padding: 24px;">
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">3. Livraison</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Vos marchandises arrivent à destination. Facturation automatique.</p>
+                        <h3 class="card-title"
+                            style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">3.
+                            Livraison</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">Vos marchandises arrivent à destination.
+                            Facturation automatique.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Final CTA Section -->
-        <section style="padding: 100px 5%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; text-align: center;">
-            <h2 style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem;">Prêt à propulser votre logistique ?</h2>
+        <section
+            style="padding: 100px 5%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; text-align: center;">
+            <h2 style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem;">
+                Prêt à propulser votre logistique ?</h2>
             <p style="font-size: 1.2rem; color: rgba(255,255,255,0.7); max-width: 700px; margin: 0 auto 3rem;">
                 Rejoignez les leaders du marché qui font confiance à TransitPro pour la gestion de leurs flux mondiaux.
             </p>
@@ -812,34 +916,54 @@
     </main>
 
     <footer style="padding: 5rem 5% 2rem; background: #0f172a; color: #ffffff;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4rem; margin-bottom: 2rem;">
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4rem; margin-bottom: 2rem;">
             <div>
                 <a href="/transit/" class="landing-logo" style="margin-bottom: 1.5rem;">
                     TRANSIT<span class="accent">PRO</span>
                 </a>
-                <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">Entreprise guinéenne fondée à Conakry. Votre partenaire de confiance pour le transit international en Afrique et dans le monde.</p>
+                <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">Entreprise guinéenne
+                    fondée à Conakry. Votre partenaire de confiance pour le transit international en Afrique et dans le
+                    monde.</p>
             </div>
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Solutions</h4>
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Fret Aérien</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Transport Maritime</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Logistique Routière</a></li>
+                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Fret
+                            Aérien</a></li>
+                    <li><a href="#"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Transport
+                            Maritime</a></li>
+                    <li><a href="#"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Logistique
+                            Routière</a></li>
                 </ul>
             </div>
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Compagnie</h4>
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
-                    <li><a href="/transit/about" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">À Propos</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Nos Partenaires</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Contact</a></li>
+                    <li><a href="/transit/about"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">À Propos</a>
+                    </li>
+                    <li><a href="/transit/contact"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Contact</a>
+                    </li>
+                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Nos
+                            Partenaires</a></li>
+                    <li><a href="#"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Contact</a>
+                    </li>
                 </ul>
             </div>
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Légal</h4>
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Mentions Légales</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Confidentialité</a></li>
+                    <li><a href="#"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Mentions
+                            Légales</a></li>
+                    <li><a href="#"
+                            style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Confidentialité</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -876,7 +1000,7 @@
     <script>
         // Gestion du changement de style de la navbar + bouton retour en haut
         const backToTopBtn = document.getElementById('backToTop');
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             const nav = document.querySelector('.landing-top-nav');
             if (window.scrollY > 50) {
                 nav.classList.add('scrolled');
@@ -914,7 +1038,7 @@
             const totalCards = cards.length;
             const gap = 30;
             const cardWidth = 323;
-            
+
             // Cloner les cartes pour un défilement infini fluide
             cards.forEach(card => {
                 const clone = card.cloneNode(true);
@@ -942,4 +1066,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -309,6 +309,7 @@
         <div class="nav-links" style="display: flex; gap: 2rem; align-items: center; justify-content: center;">
             <a href="/transit/" class="nav-link">Accueil</a>
             <a href="/transit/about" class="nav-link">À Propos</a>
+            <a href="/transit/contact" class="nav-link">Contact</a>
         </div>
         <div style="display: flex; justify-content: flex-end;">
             <a href="/transit/login" class="btn-login-white">Connexion</a>

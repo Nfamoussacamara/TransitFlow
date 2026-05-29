@@ -32,4 +32,14 @@ class MainController extends Controller
         $this->startSession();
         $this->view('about');
     }
+
+    /**
+     * Affiche la page "Contact".
+     * GET /contact
+     */
+    public function contact(): void
+    {
+        $this->startSession();
+        $this->view('contact');
+    }
 }
