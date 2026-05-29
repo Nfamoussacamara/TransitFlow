@@ -14,7 +14,7 @@
     /* Neutres Sophistiqués */
     --color-bg-light: 214 18% 95%;        /* Gris-bleu un peu plus prononcé pour faire ressortir le blanc */
     --color-surface-white: #ffffff;
-    --color-border-light: rgba(0, 0, 0, 0.08); /* Bordure grisée plus marquée et élégante */
+    --color-border-light: rgba(0, 0, 0, 0.12); /* Gris plus marqué pour les bordures */
     --color-text-dark: #0f172a;           /* Bleu Nuit sombre */
     --color-text-muted: #64748b;          /* Gris ardoise secondaire */
 
@@ -303,7 +303,7 @@ body {
     padding: 0.75rem 1rem;
     border-radius: 10px;
     background: var(--color-surface-white);
-    border: 1px solid var(--color-border-light);
+    border: 2px solid var(--color-border-light);
     box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.02), 
                 0 1px 2px 0 rgba(0, 0, 0, 0.01);
     overflow: hidden;
@@ -422,7 +422,7 @@ body {
     background: var(--color-surface-white);
     padding: 1.75rem;
     border-radius: 16px;
-    border: 1px solid var(--color-border-light);
+    border: 2px solid var(--color-border-light);
     box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.02);
     margin: 0 2.5rem 2.5rem 2.5rem; /* Marges latérales alignées sur la grille */
 }

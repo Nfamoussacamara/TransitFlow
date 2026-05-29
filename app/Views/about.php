@@ -17,27 +17,124 @@
     <link rel="stylesheet" href="/transit/public/css/style.css">
     
     <style>
+        /* Shared Navigation Styles */
+        .landing-top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .landing-top-nav.scrolled {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            padding: 1rem 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .landing-logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .landing-logo .accent {
+            color: #06b6d4;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .btn-login-white {
+            background: #ffffff;
+            color: #0458e0;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-login-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
         .about-hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            padding: 120px 5% 80px;
+            padding: 160px 5% 100px; /* Augmentation padding pour compenser nav fixe */
             color: #ffffff;
             text-align: center;
         }
 
         .about-hero h1 {
             font-family: var(--font-heading);
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
             font-weight: 800;
             margin-bottom: 1.5rem;
+            letter-spacing: -2px;
         }
 
         .about-hero p {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: rgba(255, 255, 255, 0.7);
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
+        .section-tag {
+            display: inline-block;
+            background: rgba(4, 88, 224, 0.1);
+            color: #0458e0;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 3rem;
+            letter-spacing: -1px;
+        }
+
+        /* ... reste des styles conservés ... */
         .content-section {
             padding: 80px 5%;
             max-width: 1200px;
@@ -178,7 +275,7 @@
 </head>
 <body>
 
-    <nav class="landing-top-nav" style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); position: fixed; top: 0; width: 100%;">
+    <nav class="landing-top-nav">
         <a href="/transit/" class="landing-logo">
             TRANSIT<span class="accent">PRO</span>
         </a>
@@ -250,5 +347,16 @@
         <p>&copy; 2026 TransitPro — Tous droits réservés.</p>
     </footer>
 
+    <script>
+        // Gestion du changement de style de la navbar au scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.landing-top-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
