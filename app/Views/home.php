@@ -23,8 +23,8 @@
         }
 
         .landing-top-nav {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             padding: 1.5rem 5%;
             position: fixed;
@@ -34,6 +34,7 @@
             background: transparent;
             border-bottom: 1px solid transparent;
             transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         .landing-top-nav.scrolled {
@@ -99,7 +100,7 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             padding: 0 5%;
             color: #ffffff;
             overflow: hidden;
@@ -119,7 +120,8 @@
         .hero-content {
             position: relative;
             max-width: 900px;
-            text-align: left;
+            text-align: center;
+            margin: 0 auto;
             z-index: 10;
             padding-top: 60px;
         }
@@ -155,7 +157,7 @@
             font-size: 1.25rem;
             color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
-            margin-bottom: 3rem;
+            margin: 0 auto 3rem;
             max-width: 650px;
             animation: fadeInUp 0.8s ease 0.4s forwards;
             opacity: 0;
@@ -164,6 +166,7 @@
         .hero-features-bar {
             display: flex;
             gap: 1.5rem;
+            justify-content: center;
             flex-wrap: wrap;
             animation: fadeInUp 0.8s ease 0.5s forwards;
             opacity: 0;
@@ -458,9 +461,11 @@
         <a href="/transit/" class="landing-logo">
             TRANSIT<span class="accent">PRO</span>
         </a>
-        <div class="nav-links">
+        <div class="nav-links" style="display: flex; gap: 2rem; align-items: center; justify-content: center;">
             <a href="#services" class="nav-link">Services</a>
             <a href="/transit/about" class="nav-link">À Propos</a>
+        </div>
+        <div style="display: flex; justify-content: flex-end;">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="/transit/login" class="btn-login-white">Accéder à mon espace</a>
             <?php else: ?>
@@ -475,10 +480,7 @@
             <div class="hero-overlay"></div>
             
             <div class="hero-content">
-                <div class="hero-badge">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"></path></svg>
-                    TransitPro Global
-                </div>
+                <!-- Badge enlevé -->
 
                 <h1>Simplifiez vos flux de transit internationaux.</h1>
 
@@ -501,13 +503,7 @@
                     </div>
                 </div>
 
-                <div class="hero-actions">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="/transit/login" class="btn-cta">Accéder à mon espace</a>
-                    <?php else: ?>
-                        <a href="/transit/login" class="btn-cta">Démarrer maintenant</a>
-                    <?php endif; ?>
-                </div>
+                <!-- Actions Hero enlevées -->
             </div>
         </section>
 
@@ -580,7 +576,6 @@
             <div class="features-grid">
                 <div class="dashboard-card card-blue-royal">
                     <div class="card-header">
-                        <div class="card-icon-container">🚢</div>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Multi-Modal Solutions</h3>
@@ -589,7 +584,6 @@
                 </div>
                 <div class="dashboard-card card-blue-cyan">
                     <div class="card-header">
-                        <div class="card-icon-container">📄</div>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Facturation Automatisée</h3>
@@ -598,7 +592,6 @@
                 </div>
                 <div class="dashboard-card card-blue-indigo">
                     <div class="card-header">
-                        <div class="card-icon-container">🛡️</div>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 1rem;">Espace Client Sécurisé</h3>
@@ -616,7 +609,6 @@
                 <!-- Card 1 : Expéditions -->
                 <div class="dashboard-card card-blue-royal">
                     <div class="card-header">
-                        <div class="card-icon-container">🚢</div>
                         <span class="card-trend">+12%</span>
                     </div>
                     <div class="card-body">
@@ -631,7 +623,6 @@
                 <!-- Card 2 : Pays -->
                 <div class="dashboard-card card-blue-cyan">
                     <div class="card-header">
-                        <div class="card-icon-container">🌍</div>
                     </div>
                     <div class="card-body">
                         <p class="card-value">120+</p>
@@ -645,7 +636,6 @@
                 <!-- Card 3 : Succès -->
                 <div class="dashboard-card card-blue-indigo">
                     <div class="card-header">
-                        <div class="card-icon-container">✅</div>
                         <span class="card-trend">99.9%</span>
                     </div>
                     <div class="card-body">
@@ -660,7 +650,6 @@
                 <!-- Card 4 : Expertise -->
                 <div class="dashboard-card card-blue-slate">
                     <div class="card-header">
-                        <div class="card-icon-container">🏆</div>
                     </div>
                     <div class="card-body">
                         <p class="card-value">10+</p>
@@ -786,7 +775,6 @@
             <div class="process-grid" style="display: grid; grid-template-columns: repeat(auto-fit, 323px); justify-content: center; gap: 30px;">
                 <div class="dashboard-card card-blue-royal" style="width: 323px; height: 193px; padding: 24px;">
                     <div class="card-header">
-                        <div class="card-icon-container">📝</div>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">1. Réservation</h3>
@@ -795,7 +783,6 @@
                 </div>
                 <div class="dashboard-card card-blue-cyan" style="width: 323px; height: 193px; padding: 24px;">
                     <div class="card-header">
-                        <div class="card-icon-container">🚚</div>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">2. Transit</h3>
@@ -804,7 +791,6 @@
                 </div>
                 <div class="dashboard-card card-blue-indigo" style="width: 323px; height: 193px; padding: 24px;">
                     <div class="card-header">
-                        <div class="card-icon-container">🏁</div>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title" style="font-size: 1.1rem; color: #0f172a; margin-bottom: 0.5rem; text-transform: none;">3. Livraison</h3>
@@ -820,7 +806,7 @@
             <p style="font-size: 1.2rem; color: rgba(255,255,255,0.7); max-width: 700px; margin: 0 auto 3rem;">
                 Rejoignez les leaders du marché qui font confiance à TransitPro pour la gestion de leurs flux mondiaux.
             </p>
-            <a href="/transit/login" class="btn-cta">Commencer l'aventure</a>
+            <!-- Bouton enlevé -->
         </section>
 
     </main>
@@ -831,9 +817,7 @@
                 <a href="/transit/" class="landing-logo" style="margin-bottom: 1.5rem;">
                     TRANSIT<span class="accent">PRO</span>
                 </a>
-                <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">
-                    Votre partenaire de confiance pour le transit international. Technologie, rapidité et sécurité au service de votre croissance.
-                </p>
+                <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">Entreprise guinéenne fondée à Conakry. Votre partenaire de confiance pour le transit international en Afrique et dans le monde.</p>
             </div>
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Solutions</h4>
