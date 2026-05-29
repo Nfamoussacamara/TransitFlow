@@ -1,104 +1,76 @@
-# TransitPro — Gestion de Transits et Facturation
+# 🚚 TransitPro — Solution Intégrée de Gestion Logistique & Facturation
 
-> [!TIP]
-> 🎓 **DOCUMENTATION DE PRÉSENTATION (EXPOSÉ) :** Une documentation ultra-complète conçue spécialement pour votre exposé oral et détaillant toute la structure, les calculs, la sécurité et un scénario de démonstration est disponible dans le fichier [DOCUMENTATION_EXPOSE.md](file:///d:/transit/docs/DOCUMENTATION_EXPOSE.md).
-
-Ce projet est une application web de gestion des flux logistiques (transits de marchandises) et de leur facturation. Il a été conçu avec une architecture modulaire et découplée pour faciliter le travail en équipe.
+TransitPro est une plateforme modulaire conçue pour simplifier le suivi des flux de transit international et automatiser la facturation logistique. Ce projet illustre une architecture logicielle robuste en PHP natif, respectant les principes POO et le patron de conception MVC.
 
 ---
 
-## 🏗️ Architecture du Projet
+## 🌟 Fonctionnalités du Système
 
-Le projet suit les principes de conception orientée objet en PHP, structuré autour du patron de conception **MVC (Modèle-Vue-Contrôleur)** complété par une **couche Service** et un **Repository**.
+Le projet est divisé en deux sections distinctes offrant des expériences sur-mesure pour chaque type d'utilisateur.
 
-### Organisation des Répertoires
+### 🏢 Espace Administrateur (Gestion & Pilotage)
+Le tableau de bord administrateur est le cœur opérationnel de TransitPro :
+- **Pilotage de l'Activité** : Vue globale sur le nombre d'expéditions, les transits en cours et les arrivées prévues.
+- **Gestion du Fret** : Création, modification et suppression de transits.
+- **Cartographie Interactive** : Visualisation des itinéraires via Leaflet.js, calcul automatique des distances et suggestion intelligente de villes.
+- **Facturation Automatisée** : Génération immédiate d'une facture PDF lors de l'enregistrement d'un nouveau transit, basée sur les tarifs officiels (GNF).
+- **Formatage Professionnel** : Exportation de factures PDF ultra-précises avec logo, détails transporteur et totaux HT/TVA/TTC.
 
+### 👤 Espace Client (Consultation & Transparence)
+Une interface épurée permettant au client de suivre ses commandes en toute autonomie :
+- **Suivi en Temps Réel** : Barre de progression dynamique simulant l'avancée du transit entre le départ et l'arrivée prévue.
+- **Historique et Archives** : Consultation de la liste complète des expéditions passées et actuelles.
+- **Téléchargement Autonome** : Accès direct au téléchargement des factures au format PDF à tout moment.
+- **Statistiques Personnelles** : Résumé visuel de l'activité du client (total expéditions, colis livrés, colis en attente).
+
+---
+
+## 🏗️ Architecture Technique
+
+TransitPro utilise une structure **MVC (Modèle-Vue-Contrôleur)** découplée, complétée par une couche **Repository** et **Service** pour garantir la scalabilité et la maintenabilité.
+
+### Structure des Dossiers
 ```text
 transit/
-├── app/                      # Code applicatif principal
-│   ├── Controllers/          # Contrôleurs : gèrent les requêtes HTTP et le rendu des vues
-│   │   └── TransitController.php
-│   ├── Core/                 # Noyau : routeur, contrôleur de base, classe modèle mère
-│   ├── Models/               # Entités/Modèles du domaine (sans SQL, purs objets PHP)
-│   │   ├── Client.php, Marchandise.php, Transit.php, Facture.php, Pays.php, Ville.php
-│   ├── Repositories/         # Couche d'accès aux données (SQL brut, requêtes préparées et hydratation)
-│   │   └── TransitRepository.php
-│   ├── Services/             # Logique métier pure, orchestration et validations
-│   │   ├── TransitService.php, FacturationService.php, DatabaseInitializer.php
-│   └── Views/                # Vues (fichiers HTML/CSS/JS/PHP pour le rendu visuel)
-│       ├── dashboard.php, expeditions.php, factures.php
-├── config/                   # Configuration de l'application (connexion BDD)
-│   └── Database.php
-├── public/                   # Point d'entrée web public (assets, CSS, JS)
-│   └── index.php
-├── routes/                   # Fichier de définition des routes de l'application
-├── vendor/                   # Chargeur de classes PSR-4 personnalisé
-└── README.md                 # Ce fichier de documentation
+├── app/                      # Cœur applicatif
+│   ├── Controllers/         # Orchestre les requêtes et les vues
+│   ├── Models/              # Entités PHP (Client, Facture, Transit, etc.)
+│   ├── Repositories/        # Couche d'accès aux données (Requêtes SQL & Hydratation)
+│   ├── Services/            # Logique métier (Calculs, Validations, Initialisation)
+│   └── Views/               # Fichiers PHP/HTML (Dashboard, Templates PDF, Partials)
+├── config/                  # Configuration (Base de données, Constantes)
+├── public/                  # Point d'entrée web (Index.php, Assets CSS/JS/Images)
+├── routes/                  # Définition des URL et actions associées
+└── vendor/                  # Autoloader PSR-4 personnalisé
 ```
 
 ---
 
-## 🧩 Responsabilités des Couches
+## 🛡️ Guide pour les Développeurs & Collaborateurs
 
-Pour garantir la propreté du code et éviter que les fichiers ne deviennent trop lourds ("bloated"), les responsabilités ont été strictement divisées :
+### Principes de Code
+1. **Zéro SQL dans les Vues/Contrôleurs** : Toute requête doit passer par les `Repositories`. Toute logique métier complexe (calcul de prix, validation d'itinéraire) doit résider dans les `Services`.
+2. **Hydratation des Objets** : Les données sortant de la base sont systématiquement converties en Objets (`Models`) par le Repository. Ne manipulez jamais de tableaux associatifs bruts dans la logique métier.
+3. **Sécurité des Données** : Utilisez systématiquement les requêtes préparées via PDO pour prévenir les injections SQL.
+4. **Design System** : L'interface utilise un système de design cohérent basé sur des variables CSS (`:root`) pour les couleurs et les espacements.
 
-### 1. Les Vues (`app/Views/`)
-*   Responsables uniquement du rendu visuel de l'interface utilisateur.
-*   Elles reçoivent les variables injectées par le contrôleur et les affichent de manière élégante.
-*   **Règle** : Pas de requêtes SQL ni de logique métier complexe dans les vues.
-
-### 2. Le Contrôleur (`app/Controllers/TransitController.php`)
-*   Il sert uniquement de passerelle d'aiguillage.
-*   Il intercepte les requêtes POST/GET, extrait les données, délègue tout le travail métier au **Service** (`TransitService`), puis redirige vers la bonne vue.
-*   **Règle** : Pas de requêtes SQL directes ici.
-
-### 3. Le Service Métier (`app/Services/TransitService.php`)
-*   Il contient l'intelligence de l'application.
-*   Il effectue les validations (ex: vérifier que le poids est positif, que les villes de départ et d'arrivée sont distinctes).
-*   Il collabore avec `FacturationService` pour générer automatiquement les factures à l'ajout d'un transit.
-*   **Règle** : Pas de SQL. Il passe par le **Repository** pour lire ou écrire dans la base de données.
-
-### 4. Le Dépôt (`app/Repositories/TransitRepository.php`)
-*   C'est la seule et unique classe autorisée à écrire des requêtes SQL et à communiquer avec la base de données PDO.
-*   Elle lit les tables SQL et convertit les lignes de résultats en objets du modèle PHP (processus d'**hydratation**).
-
-### 5. Les Modèles (`app/Models/`)
-*   Ce sont des objets en lecture seule représentant les entités de notre domaine (un Client, une Marchandise, un Transit). Ils encapsulent les données et leurs accesseurs (Getters).
-
+### Installation & Contribution
+1. **Environnement** : Serveur PHP 8.0+ et MySQL 5.7+ (compatible WAMP, XAMPP, MAMP).
+2. **Setup BDD** : L'application initialise sa propre base de données au premier lancement. Assurez-vous que les identifiants dans `config/Database.php` sont corrects.
+3. **Ajout de Fonctionnalités** :
+    - Pour une nouvelle entité : Créer le `Model`, puis son `Repository`, puis ajouter les méthodes nécessaires dans `TransitService`.
+    - Pour une nouvelle vue : Ajouter la route dans `routes/` (ou le dispatcher index.php) et créer le fichier correspondant dans `app/Views/`.
 
 ---
 
-## 💰 Règles de Calcul & Tarification (GNF)
-
-Les tarifs unitaires et les règles de facturation sont définis selon le type de transport choisi pour le transit (TVA fixe à 20%) :
-
-| Mode de transport | Base de calcul | Tarif unitaire | Formule Brut HT |
-| :--- | :--- | :--- | :--- |
-| **Maritime** | Surface ($m^2$) | **125 000 GNF** / $m^2$ | $Surface \times 125\ 000$ |
-| **Aérien** | Poids ($kg$) | **450 000 GNF** / $kg$ | $Poids \times 450\ 000$ |
-| **Terrestre** | Poids ($kg$) | **35 000 GNF** / $kg$ | $Poids \times 35\ 000$ |
-| **Ferroviaire** | Poids ($kg$) | **18 000 GNF** / $kg$ | $Poids \times 18\ 000$ |
-
-### Formule comptable globale :
-1. **Montant Brut (HT)** = $Base\ de\ calcul \times Tarif\ unitaire$
-2. **Montant TTC** = $Montant\ Brut\ (HT) \times 1.20$
+## 💰 Logique de Tarification (GNF)
+Les tarifs sont calculés automatiquement selon le mode de transport :
+- **Aérien** : 450 000 GNF / kg
+- **Maritime** : 125 000 GNF / m²
+- **Terrestre** : 35 000 GNF / kg
+- **Ferroviaire** : 18 000 GNF / kg
+- **TVA** : 20% applicable sur tous les montants brut (HT).
 
 ---
 
-## 🛠️ Configuration et Installation en Local
-
-### 1. Prérequis
-*   Avoir installé **WampServer** (ou XAMPP).
-*   MySQL actif sur le port `3306` (sans mot de passe pour l'utilisateur `root` par défaut).
-
-### 2. Initialisation de la Base de Données
-La création de la base de données `transit` ainsi que des tables requises est automatisée. 
-Lors du premier chargement du tableau de bord dans le navigateur, l'application appelle la classe `DatabaseInitializer` qui :
-1. Crée les tables nécessaires (si elles n'existent pas).
-2. Alimente les référentiels de base (les pays, les villes correspondantes, ainsi que les modes de transport avec leurs tarifs unitaires).
-
-*Note : Les tables opérationnelles (Clients, Marchandises, Transits, Factures) sont laissées vides par défaut pour vous permettre d'enregistrer vos propres données.*
-
-### 3. Lancer l'Application
-Placez le dossier du projet dans votre répertoire de publication (ex: `c:\wamp64\www\transit`) et rendez-vous sur :
-`http://localhost/transit/`
+© 2026 TransitPro Logistics. Conçu avec excellence pour l'Université de Labé, République de Guinée.

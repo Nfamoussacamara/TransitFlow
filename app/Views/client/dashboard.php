@@ -889,9 +889,12 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
             </div>
         </div>
 
-        <div class="modal-footer">
+        <div class="modal-footer" style="position: relative; z-index: 2000;">
             <button class="btn-modal secondary" onclick="closeFactureModal()">Fermer</button>
-            <button class="btn-modal primary" onclick="downloadFacture()" style="background: rgb(4, 88, 224); color: white;">📥 Télécharger PDF</button>
+            <button class="btn-modal primary" onclick="downloadFacture(activeFactureBtn, event)" style="background: rgb(4, 88, 224); color: white; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Télécharger PDF
+            </button>
         </div>
     </div>
 </div>
@@ -926,7 +929,10 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
     });
 
     // Gestion de la modale facture
+    let activeFactureBtn = null;
+
     function openFactureModal(button) {
+        activeFactureBtn = button;
         const row = button.closest('.facture-row');
         const numero = row.dataset.factureId;
         const montantHT = row.dataset.factureMontantHt;
@@ -1000,38 +1006,16 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
         document.getElementById('factureModal').classList.remove('active');
     }
 
-    function downloadFacture() {
-        const element = document.querySelector('.modal-content');
-        const numero = document.getElementById('modalFactureNumero').textContent;
-        
-        // Options pour le PDF
-        const opt = {
-            margin:       [10, 10],
-            filename:     `Facture_${numero}_TransitPro.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
 
-        // Masquer temporairement les éléments non désirés (boutons, bouton fermer)
-        const footer = element.querySelector('.modal-footer');
-        const closeBtn = element.querySelector('.modal-close');
-        
-        footer.style.display = 'none';
-        closeBtn.style.visibility = 'hidden';
-
-        // Générer le PDF
-        html2pdf().set(opt).from(element).save().then(() => {
-            // Restaurer après la génération
-            footer.style.display = 'flex';
-            closeBtn.style.visibility = 'visible';
-        });
-    }
-
-    // Fermer la modale en cliquant en dehors
-    document.getElementById('factureModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeFactureModal();
+    // Initialisation du listener de téléchargement de facture
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnDownload = document.getElementById('btn-download-pdf');
+        if (btnDownload) {
+            btnDownload.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log("Clic détecté sur le bouton de téléchargement");
+                downloadFacture();
+            });
         }
     });
 
@@ -1042,8 +1026,9 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
         }
     });
 
-    // Mise à jour automatique des barres de progression en temps réel
-    // Garder les références de temps lors du chargement
+    // =========================================================================
+    // CONFIGURATION ET CONSTANTES
+    // =========================================================================
     const initialTime = Math.floor(Date.now() / 1000);
 
     const STATUS_CONFIG = {
@@ -1052,6 +1037,9 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
         delivered: { pct: 100, label: 'Livré', color: '#16a34a', icon: '✅', class: 'badge-green' }
     };
 
+    // =========================================================================
+    // FONCTIONS UTILITAIRES
+    // =========================================================================
     function getStatus(now, departTs, arriveeTs) {
         if (now < departTs) return STATUS_CONFIG.waiting;
         if (now <= arriveeTs) {
@@ -1063,7 +1051,7 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
         return STATUS_CONFIG.delivered;
     }
 
-    function updateTransitProgress() {
+    window.updateTransitProgress = function() {
         const elapsed = Math.floor(Date.now() / 1000) - initialTime;
 
         document.querySelectorAll('.timeline-wrap').forEach(timeline => {
@@ -1071,22 +1059,240 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
             const now = parseInt(timeline.getAttribute('data-servertime')) + elapsed;
             const status = getStatus(now, parseInt(timeline.getAttribute('data-depart')), parseInt(timeline.getAttribute('data-arrivee')));
 
-            // Mettre à jour tous les éléments en une seule opération
-            timeline.querySelector(`.timeline-fill[data-id="${id}"]`).style.cssText = `width: ${status.pct}%; background: ${status.color};`;
-            timeline.querySelector(`.timeline-status[data-status="${id}"]`).style.color = status.color;
-            timeline.querySelector(`[data-icon="${id}"]`).textContent = status.icon;
+            const fill = timeline.querySelector(`.timeline-fill[data-id="${id}"]`);
+            if (fill) fill.style.cssText = `width: ${status.pct}%; background: ${status.color};`;
+            
+            const badge = timeline.querySelector(`.timeline-status[data-status="${id}"]`);
+            if (badge) badge.style.color = status.color;
+            
+            const icon = timeline.querySelector(`[data-icon="${id}"]`);
+            if (icon) icon.textContent = status.icon;
             
             const label = timeline.querySelector(`[data-label="${id}"]`);
-            label.textContent = status.label;
-            label.className = 'badge ' + status.class;
+            if (label) {
+                label.textContent = status.label;
+                label.className = 'badge ' + status.class;
+            }
             
-            timeline.querySelector(`[data-pct="${id}"]`).textContent = `— ${status.pct}% achevé`;
+            const pctText = timeline.querySelector(`[data-pct="${id}"]`);
+            if (pctText) pctText.textContent = `— ${status.pct}% achevé`;
         });
-    }
+    };
 
-    updateTransitProgress();
-    setInterval(updateTransitProgress, 1000);
+    // 4. Téléchargement PDF (Utilisation directe des données de la base via Dataset)
+    window.downloadFacture = function(button, e) {
+        if(e) e.preventDefault();
+        if (typeof html2pdf === 'undefined') return alert("Bibliothèque PDF non chargée.");
+
+        try {
+            // Identifier la ligne (row) parente pour accéder au dataset complet
+            const row = button.closest('.facture-row');
+            if (!row) throw new Error("Données de facture introuvables.");
+            const d = row.dataset;
+
+            // Formater les montants proprement pour le PDF
+            const fmt = (val) => new Intl.NumberFormat('fr-FR').format(val) + ' GNF';
+
+            // Remplissage ultra-précis du template avec les données brutes de la base
+            const setPdf = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+            
+            setPdf('pdf-invoice-num', d.factureId);
+            setPdf('pdf-invoice-date', 'Émise le : ' + d.factureDate);
+            setPdf('pdf-client-name', d.clientNom);
+            setPdf('pdf-client-email', d.clientEmail);
+            setPdf('pdf-route', d.villeDepart + ' (' + d.villeDepartPays + ') ➜ ' + d.villeArrivee + ' (' + d.villeArriveePays + ')');
+            setPdf('pdf-transport', d.transport + ' (' + d.transportType + ')');
+            setPdf('pdf-item-title', d.marchandiseDesignation);
+            setPdf('pdf-row-qty', d.marchandisePoids + ' kg / ' + d.marchandiseSurface + ' m²');
+            setPdf('pdf-row-price', fmt(d.transportTarif));
+            setPdf('pdf-row-total', fmt(d.factureMontantHt));
+            setPdf('pdf-summary-brut', fmt(d.factureMontantHt));
+            setPdf('pdf-summary-tva', fmt(d.factureTva));
+            setPdf('pdf-summary-ttc', fmt(d.factureMontantTtc));
+
+            const element = document.getElementById('invoice-pdf-template');
+            if(!element) return alert("Template PDF introuvable.");
+
+            // Déplacer temporairement le template à la racine du body pour une capture propre
+            document.body.appendChild(element);
+            
+            element.style.display = 'block';
+            element.style.opacity = '1';
+            element.style.left = '0';
+            element.style.top = '0';
+            element.style.position = 'absolute';
+            element.style.zIndex = '999999';
+            element.style.background = '#ffffff';
+
+            setTimeout(() => {
+                const opt = {
+                    margin: 0,
+                    filename: 'Facture_' + d.factureId + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { 
+                        scale: 2, 
+                        useCORS: true, 
+                        scrollY: 0, 
+                        scrollX: 0, 
+                        backgroundColor: '#ffffff',
+                        width: 794, // Largeur A4 en pixels (approx)
+                        height: 1123 // Hauteur A4 en pixels (approx)
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // Remettre en cache après capture
+                    element.style.display = 'none';
+                    element.style.opacity = '0';
+                    element.style.left = '-9999px';
+                });
+            }, 600);
+        } catch (err) { alert("Erreur génération base: " + err.message); }
+    };
+
+    // =========================================================================
+    // INITIALISATION ET INTERVALLES
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTransitProgress();
+        setInterval(updateTransitProgress, 1000);
+    });
+
+    // Fermer avec la touche Échap
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeFactureModal();
+    });
+
+
+
 </script>
 
+    <!-- =========================================================================
+       Template Professionnel de Facture PDF (Espace Client TransitPro)
+       ========================================================================= -->
+    <div id="invoice-pdf-template" style="position: absolute; left: -9999px; top: -9999px; opacity: 0; pointer-events: none; width: 210mm; height: 297mm; padding: 25mm; background: #fff; color: #1e293b; font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; z-index: -1;">
+        
+        <!-- En-tête : Logo & Type de Document -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" width="32" height="32" style="color: #0458e0;">
+                        <path d="M4 15l8-8 8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M4 19l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                    </svg>
+                    <h1 style="font-family: 'Outfit', sans-serif; font-size: 34px; font-weight: 800; color: #0458e0; margin: 0; letter-spacing: -1px;">TRANSIT<span style="color: #06b6d4;">PRO</span></h1>
+                </div>
+                <p style="margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 700;">Expertise Logistique Mondiale</p>
+                <p style="margin: 5px 0 0; font-size: 10px; color: #94a3b8; font-style: italic;">Née à l'Université de Labé, République de Guinée</p>
+            </div>
+            <div style="text-align: right;">
+                <h2 style="font-size: 28px; font-weight: 900; text-transform: uppercase; margin: 0; color: #0f172a; letter-spacing: 1px;">Facture Client</h2>
+                <div style="margin-top: 10px;">
+                    <p style="margin: 0; font-size: 14px; font-weight: 700; color: #0458e0;" id="pdf-invoice-num">#FAC-0000</p>
+                    <p style="margin: 2px 0; font-size: 11px; color: #64748b;" id="pdf-invoice-date">---</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blocs d'informations Émetteur / Destinataire -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 50px;">
+            <div style="border-left: 3px solid #0458e0; padding-left: 20px;">
+                <h3 style="font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 15px; font-weight: 800;">Émis par</h3>
+                <p style="margin: 0; font-weight: 800; font-size: 16px; color: #1e293b;">TransitPro Logistics SAS</p>
+                <p style="margin: 4px 0; font-size: 12px; color: #64748b; line-height: 1.5;">
+                    Quartier Pounthioun, Labé<br>
+                    République de Guinée<br>
+                    support@transitpro.gn
+                </p>
+            </div>
+            <div style="border-left: 3px solid #e2e8f0; padding-left: 20px;">
+                <h3 style="font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 15px; font-weight: 800;">Facturé à</h3>
+                <p style="margin: 0; font-weight: 800; font-size: 16px; color: #1e293b;" id="pdf-client-name">---</p>
+                <p style="margin: 4px 0; font-size: 12px; color: #64748b; line-height: 1.5;" id="pdf-client-email">---</p>
+                <p style="margin: 4px 0; font-size: 12px; color: #64748b;">République de Guinée</p>
+            </div>
+        </div>
+
+        <!-- Détails Logistiques (Contexte) -->
+        <div style="background: #f8fafc; border-radius: 12px; padding: 25px; margin-bottom: 40px; border: 1px solid #e2e8f0;">
+            <h3 style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #0458e0; margin-bottom: 15px; font-weight: 800; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">Détails de l'Expédition</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <p style="margin: 0; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Itinéraire</p>
+                    <p style="margin: 4px 0; font-size: 13px; font-weight: 700; color: #1e293b;" id="pdf-route">---</p>
+                </div>
+                <div>
+                    <p style="margin: 0; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Moyen de Transport</p>
+                    <p style="margin: 4px 0; font-size: 13px; font-weight: 700; color: #1e293b;" id="pdf-transport">---</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau des Postes -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+            <thead>
+                <tr style="border-bottom: 2px solid #0f172a;">
+                    <th style="padding: 12px 10px; font-size: 11px; text-transform: uppercase; text-align: left; color: #64748b;">Description du Service</th>
+                    <th style="padding: 12px 10px; font-size: 11px; text-transform: uppercase; text-align: center; color: #64748b;">Quantité / Spéc.</th>
+                    <th style="padding: 12px 10px; font-size: 11px; text-transform: uppercase; text-align: right; color: #64748b;">Prix Unitaire</th>
+                    <th style="padding: 12px 10px; font-size: 11px; text-transform: uppercase; text-align: right; color: #64748b;">Total HT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 25px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top;">
+                        <p style="margin: 0; font-weight: 800; font-size: 14px; color: #0f172a;" id="pdf-item-title">---</p>
+                        <p style="margin: 6px 0 0; font-size: 11px; color: #64748b; line-height: 1.4;">Frais de transit international, manutention, et acheminement vers destination finale. Assurance logistique standard incluse.</p>
+                    </td>
+                    <td style="padding: 25px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; font-size: 13px; font-weight: 600; color: #1e293b;" id="pdf-row-qty">---</td>
+                    <td style="padding: 25px 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 13px; font-weight: 600; color: #1e293b;" id="pdf-row-price">---</td>
+                    <td style="padding: 25px 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 14px; font-weight: 800; color: #0f172a;" id="pdf-row-total">---</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pied de Facture : Totaux -->
+        <div style="display: flex; justify-content: flex-end;">
+            <div style="width: 250px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 0 10px;">
+                    <span style="font-size: 12px; color: #64748b; font-weight: 600;">Sous-total HT</span>
+                    <span style="font-size: 13px; color: #1e293b; font-weight: 700;" id="pdf-summary-brut">---</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 0 10px;">
+                    <span style="font-size: 12px; color: #64748b; font-weight: 600;">TVA (20%)</span>
+                    <span style="font-size: 13px; color: #16a34a; font-weight: 700;" id="pdf-summary-tva">---</span>
+                </div>
+                <div style="background: #0458e0; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; color: #fff; box-shadow: 0 4px 12px rgba(4, 88, 224, 0.2);">
+                    <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">Net à Payer</span>
+                    <span style="font-size: 20px; font-weight: 900;" id="pdf-summary-ttc">---</span>
+                </div>
+                <p style="margin-top: 12px; font-size: 9px; color: #94a3b8; text-align: right; font-style: italic;">Montants exprimés en Francs Guinéens (GNF)</p>
+            </div>
+        </div>
+
+        <!-- Informations Bancaires & Signature -->
+        <div style="margin-top: 80px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; align-items: end;">
+            <div>
+                <h4 style="font-size: 11px; text-transform: uppercase; color: #1e293b; margin-bottom: 10px; font-weight: 800;">Notes & Instructions</h4>
+                <p style="margin: 0; font-size: 10px; color: #64748b; line-height: 1.6;">
+                    Veuillez libeller votre chèque à l'ordre de **TransitPro Logistics**. <br>
+                    Le paiement est exigible sous 30 jours à compter de la date d'émission. <br>
+                    Pour tout virement, veuillez rappeler le numéro de facture en référence.
+                </p>
+            </div>
+            <div style="text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <p style="margin: 0 0 40px; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Cachet & Signature Électronique</p>
+                <div style="font-family: 'Dancing Script', cursive; font-size: 22px; color: #0458e0; opacity: 0.8; transform: rotate(-3deg);">TransitPro Official</div>
+            </div>
+        </div>
+
+        <!-- Bas de page (Mention légale) -->
+        <div style="position: absolute; bottom: 25mm; left: 25mm; right: 25mm; border-top: 1px solid #f1f5f9; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <p style="margin: 0; font-size: 9px; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Espace Client TransitPro – v2.0</p>
+            <p style="margin: 0; font-size: 10px; color: #cbd5e1;">Page 1 sur 1</p>
+        </div>
+    </div>
 </body>
 </html>
+
