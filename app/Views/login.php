@@ -232,22 +232,13 @@
 
         .form-input-wrapper {
             position: relative;
-        }
-
-        .form-input-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--color-text-muted);
-            pointer-events: none;
             display: flex;
             align-items: center;
         }
 
         .form-input {
             width: 100%;
-            padding: 0.85rem 1rem 0.85rem 2.75rem;
+            padding: 0.85rem 1.25rem;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             background: #f8fafc;
@@ -255,6 +246,27 @@
             font-size: 0.95rem;
             color: var(--color-text-dark);
             transition: var(--transition-smooth);
+        }
+
+        .form-input-password {
+            padding-right: 2.75rem !important;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .password-toggle:hover {
+            color: rgb(var(--color-brand-royal));
         }
 
         .form-input:focus {
@@ -391,66 +403,140 @@
                     <span class="login-logo-text">Transit<span class="text-accent">Pro</span></span>
                 </div>
 
-                <div class="login-header">
-                    <h2>Espace Logistique</h2>
-                    <p>Connectez-vous pour accéder au tableau de bord</p>
-                </div>
-
-                <?php if (isset($_GET['error'])): ?>
+                <?php
+                // Messages d'erreur lisibles
+                $errorMessages = [
+                    '1'              => 'Identifiant ou mot de passe incorrect.',
+                    'email_vide'     => 'Veuillez saisir votre adresse e-mail.',
+                    'email_inconnu'  => 'Aucune marchandise enregistrée pour cet e-mail.',
+                    'deja_actif'     => 'Un compte existe déjà pour cet e-mail. Connectez-vous normalement.',
+                    'mdp_diff'       => 'Les mots de passe ne correspondent pas.',
+                    'champs_manquants' => 'Veuillez remplir tous les champs.',
+                ];
+                $errorMsg = $errorMessages[$error] ?? ($error !== '' ? htmlspecialchars($error) : '');
+                ?>
+                <?php if ($errorMsg !== ''): ?>
                     <div class="login-error">
                         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="8" x2="12" y2="12"></line>
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
-                        <span>
-                            <?php 
-                            if ($_GET['error'] === '1') {
-                                echo "Identifiant ou mot de passe incorrect.";
-                            } else {
-                                echo htmlspecialchars($_GET['error']);
-                            }
-                            ?>
-                        </span>
+                        <span><?= $errorMsg ?></span>
                     </div>
                 <?php endif; ?>
 
-                <!-- Formulaire de Connexion -->
-                <form class="login-form" action="index.php?url=login" method="POST">
-                    <div class="form-group">
-                        <label class="form-label" for="username">Identifiant</label>
-                        <div class="form-input-wrapper">
-                            <span class="form-input-icon">
-                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                            </span>
-                            <input class="form-input" type="text" id="username" name="username" placeholder="Entrez votre identifiant" required autofocus autocomplete="username">
+                <?php if ($step === 'set_password'): ?>
+                    <!-- ÉTAPE 2 : Définir le mot de passe -->
+                    <div class="login-header">
+                        <h2>Créer votre mot de passe</h2>
+                        <p>Compte pour : <strong><?= htmlspecialchars($email) ?></strong></p>
+                    </div>
+                    <form class="login-form" action="/transit/login?action=activate" method="POST">
+                        <input type="hidden" name="email" value="<?= htmlspecialchars($email) ?>">
+                        <div class="form-group">
+                            <label class="form-label" for="password">Nouveau mot de passe</label>
+                            <div class="form-input-wrapper">
+                                <input class="form-input form-input-password" type="password" id="password" name="password" placeholder="Minimum 6 caractères" required>
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password', this)">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label" for="password_confirm">Confirmer le mot de passe</label>
+                            <div class="form-input-wrapper">
+                                <input class="form-input form-input-password" type="password" id="password_confirm" name="password_confirm" placeholder="••••••••" required>
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password_confirm', this)">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn-login" type="submit">
+                            <span>Activer mon compte</span>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </button>
+                    </form>
+                    <div style="text-align:center;margin-top:1rem;">
+                        <a href="/transit/login" style="font-size:.8rem;color:#64748b;">← Retour à la connexion</a>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" for="password">Mot de passe</label>
-                        <div class="form-input-wrapper">
-                            <span class="form-input-icon">
-                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                    <path d="M7 11V7a5 5 0 0110 0v4"></path>
-                                </svg>
-                            </span>
-                            <input class="form-input" type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                <?php elseif ($step === 'activate'): ?>
+                    <!-- ÉTAPE 1 : Saisir l'email pour l'activation -->
+                    <div class="login-header">
+                        <h2>Première connexion</h2>
+                        <p>Saisissez l'e-mail utilisé lors de l'enregistrement de vos marchandises.</p>
+                    </div>
+                    <form class="login-form" action="/transit/login?action=check_email" method="POST">
+                        <div class="form-group">
+                            <label class="form-label" for="email">Votre adresse e-mail</label>
+                            <div class="form-input-wrapper">
+                                <input class="form-input" type="email" id="email" name="email" placeholder="votre@email.com" required autofocus>
+                            </div>
                         </div>
+                        <button class="btn-login" type="submit">
+                            <span>Vérifier mon e-mail</span>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </form>
+                    <div style="text-align:center;margin-top:1rem;">
+                        <a href="/transit/login" style="font-size:.8rem;color:#64748b;">← Retour à la connexion</a>
                     </div>
 
-                    <button class="btn-login" type="submit">
-                        <span>Se connecter</span>
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </button>
-                </form>
+                <?php else: ?>
+                    <!-- ÉTAPE 0 : Connexion standard (admin ou client déjà actif) -->
+                    <div class="login-header">
+                        <h2>Espace Logistique</h2>
+                        <p>Connectez-vous pour accéder à votre tableau de bord</p>
+                    </div>
+                    <form class="login-form" action="/transit/login" method="POST">
+                        <div class="form-group">
+                            <label class="form-label" for="username">Identifiant</label>
+                            <div class="form-input-wrapper">
+                                <input class="form-input" type="text" id="username" name="username" placeholder="Identifiant ou e-mail" required autofocus autocomplete="username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="password">Mot de passe</label>
+                            <div class="form-input-wrapper">
+                                <input class="form-input form-input-password" type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('password', this)">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn-login" type="submit">
+                            <span>Se connecter</span>
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Lien première connexion client -->
+                    <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e2e8f0;">
+                        <p style="font-size:.8rem;color:#94a3b8;margin-bottom:.5rem;">Client ? Première visite ?</p>
+                        <a href="/transit/login?step=activate"
+                           style="font-size:.85rem;font-weight:600;color:#0458e0;text-decoration:none;">
+                            ⭐ Activer mon espace client
+                        </a>
+                    </div>
+                <?php endif; ?>
 
                 <div class="login-footer">
                     <p>&copy; <?= date('Y') ?> TransitPro. Tous droits réservés.</p>
@@ -458,6 +544,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Script de visibilité de mot de passe -->
+    <script>
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.innerHTML = `
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                `;
+            } else {
+                input.type = "password";
+                button.innerHTML = `
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+            }
+        }
+    </script>
 
 </body>
 </html>

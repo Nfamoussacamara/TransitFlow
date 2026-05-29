@@ -12,7 +12,7 @@
     --color-brand-indigo: 99, 102, 241;   /* #6366f1 - Bleu Indigo / Actions */
 
     /* Neutres Sophistiqués */
-    --color-bg-light: 214, 18%, 95%;      /* Gris-bleu un peu plus prononcé pour faire ressortir le blanc */
+    --color-bg-light: 214 18% 95%;        /* Gris-bleu un peu plus prononcé pour faire ressortir le blanc */
     --color-surface-white: #ffffff;
     --color-border-light: rgba(0, 0, 0, 0.08); /* Bordure grisée plus marquée et élégante */
     --color-text-dark: #0f172a;           /* Bleu Nuit sombre */
@@ -711,8 +711,6 @@ body {
 #details-edit-mode::-webkit-scrollbar-track,
 #details-view-mode::-webkit-scrollbar-track {
     background: transparent;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }
 .modal-form::-webkit-scrollbar-thumb,
 #details-edit-mode::-webkit-scrollbar-thumb,

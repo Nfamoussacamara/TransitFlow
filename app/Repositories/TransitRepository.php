@@ -456,4 +456,100 @@ class TransitRepository
     {
         return $this->pdo->query("SELECT id, nom, type, tarif_unitaire FROM modes_transport ORDER BY nom")->fetchAll();
     }
+
+    /**
+     * Recherche si un compte utilisateur existe déjà pour un client donné.
+     */
+    public function findUtilisateurByClientId(int $clientId): ?array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE client_id = :cid LIMIT 1");
+        $stmt->execute([':cid' => $clientId]);
+        $res = $stmt->fetch();
+        return $res !== false ? $res : null;
+    }
+
+    /**
+     * Récupère uniquement les transits liés aux marchandises d'un client donné.
+     */
+    public function findTransitsByClientId(int $clientId): array
+    {
+        $transits = [];
+        $query = "
+            SELECT 
+                t.id AS transit_id, t.date_depart, t.date_arrivee, t.distance AS t_distance,
+                vd.id AS vd_id, vd.nom AS vd_nom, vd.latitude AS vd_lat, vd.longitude AS vd_lng, pd.id AS pd_id, pd.nom AS pd_nom,
+                va.id AS va_id, va.nom AS va_nom, va.latitude AS va_lat, va.longitude AS va_lng, pa.id AS pa_id, pa.nom AS pa_nom,
+                m.id AS m_id, m.designation AS m_des, m.poids AS m_pds, m.surface AS m_surf, m.etat AS m_etat,
+                c.id AS c_id, c.nom AS c_nom, c.email AS c_email,
+                mt.id AS mt_id, mt.nom AS mt_nom, mt.type AS mt_type, mt.tarif_unitaire AS mt_tarif,
+                f.id AS f_id, f.numero AS f_num, f.montant_brut AS f_brut, f.montant_ttc AS f_ttc, f.date_facturation AS f_date
+            FROM transits t
+            JOIN villes vd ON t.ville_depart_id = vd.id
+            JOIN pays pd ON vd.pays_id = pd.id
+            JOIN villes va ON t.ville_arrivee_id = va.id
+            JOIN pays pa ON va.pays_id = pa.id
+            JOIN marchandises m ON t.marchandise_id = m.id
+            JOIN clients c ON m.client_id = c.id
+            JOIN modes_transport mt ON t.mode_transport_id = mt.id
+            LEFT JOIN factures f ON f.transit_id = t.id
+            WHERE c.id = :client_id
+            ORDER BY t.date_depart DESC
+        ";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':client_id' => $clientId]);
+        $rows = $stmt->fetchAll();
+
+        foreach ($rows as $row) {
+            $transits[] = $this->hydrateTransit($row);
+        }
+
+        return $transits;
+    }
+
+    /**
+     * Récupère uniquement les factures liées aux transits d'un client donné.
+     */
+    public function findFacturesByClientId(int $clientId): array
+    {
+        $factures = [];
+        $query = "
+            SELECT 
+                f.id AS f_id, f.numero AS f_num, f.montant_brut AS f_brut, f.montant_ttc AS f_ttc, f.base_calcul AS f_base, f.date_facturation AS f_date,
+                t.id AS transit_id, t.date_depart, t.date_arrivee,
+                vd.id AS vd_id, vd.nom AS vd_nom, pd.id AS pd_id, pd.nom AS pd_nom,
+                va.id AS va_id, va.nom AS va_nom, pa.id AS pa_id, pa.nom AS pa_nom,
+                m.id AS m_id, m.designation AS m_des, m.poids AS m_pds, m.surface AS m_surf, m.etat AS m_etat,
+                c.id AS c_id, c.nom AS c_nom, c.email AS c_email,
+                mt.id AS mt_id, mt.nom AS mt_nom, mt.type AS mt_type, mt.tarif_unitaire AS mt_tarif
+            FROM factures f
+            JOIN transits t ON f.transit_id = t.id
+            JOIN villes vd ON t.ville_depart_id = vd.id
+            JOIN pays pd ON vd.pays_id = pd.id
+            JOIN villes va ON t.ville_arrivee_id = va.id
+            JOIN pays pa ON va.pays_id = pa.id
+            JOIN marchandises m ON t.marchandise_id = m.id
+            JOIN clients c ON m.client_id = c.id
+            JOIN modes_transport mt ON t.mode_transport_id = mt.id
+            WHERE c.id = :client_id
+            ORDER BY f.date_facturation DESC
+        ";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':client_id' => $clientId]);
+        $rows = $stmt->fetchAll();
+
+        foreach ($rows as $row) {
+            $transit = $this->hydrateTransit($row);
+            $factureObj = new Facture(
+                $row['f_num'], (float)$row['f_brut'], (float)$row['f_ttc'],
+                (float)$row['f_base'], new DateTimeImmutable($row['f_date']),
+                $transit, (int)$row['f_id']
+            );
+            $transit->setFacture($factureObj);
+            $factures[] = $factureObj;
+        }
+
+        return $factures;
+    }
 }

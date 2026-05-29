@@ -119,12 +119,22 @@ class DatabaseInitializer
             // respecter la limite d'index MySQL (767 octets en utf8mb4).
             $this->pdo->exec("
                 CREATE TABLE IF NOT EXISTS utilisateurs (
-                    id       INT AUTO_INCREMENT PRIMARY KEY,
-                    username VARCHAR(191) NOT NULL UNIQUE, -- Identifiant de connexion (doit être unique)
-                    password VARCHAR(255) NOT NULL,         -- Mot de passe haché par PHP (jamais en clair !)
-                    role     VARCHAR(100) DEFAULT 'admin'  -- Rôle de l'utilisateur (ex: admin, user)
+                    id        INT AUTO_INCREMENT PRIMARY KEY,
+                    username  VARCHAR(191) NOT NULL UNIQUE, -- Identifiant de connexion (doit être unique)
+                    password  VARCHAR(255) NOT NULL,         -- Mot de passe haché par PHP (jamais en clair !)
+                    role      VARCHAR(100) DEFAULT 'admin', -- Rôle de l'utilisateur (ex: admin, client)
+                    client_id INT DEFAULT NULL,              -- Lien vers la table clients si rôle = client
+                    FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL
                 );
             ");
+
+            // Migration dynamique : si la table existait déjà mais sans la colonne client_id, on l'ajoute.
+            try {
+                $this->pdo->query("SELECT client_id FROM utilisateurs LIMIT 1");
+            } catch (Exception $e) {
+                $this->pdo->exec("ALTER TABLE utilisateurs ADD COLUMN client_id INT DEFAULT NULL");
+                $this->pdo->exec("ALTER TABLE utilisateurs ADD CONSTRAINT fk_utilisateurs_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL");
+            }
 
             // On compte le nombre d'utilisateurs existants dans la table.
             $count = (int)$this->pdo->query("SELECT COUNT(*) FROM utilisateurs")->fetchColumn();

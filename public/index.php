@@ -21,10 +21,10 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-// --- ÉTAPE 1 : Chargement de l'Autoloader Composer ---
-// Composer génère un fichier "autoload.php" qui sait où trouver chaque classe PHP du projet.
+// --- ÉTAPE 1 : Chargement de l'Autoloader Fait Maison (100% Vanilla PHP) ---
+// Notre autoloader natif charge automatiquement chaque classe PHP du projet.
 // Grâce à lui, on peut écrire "new App\Controllers\AuthController()" sans aucun require_once manuel.
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../app/autoload.php';
 
 // --- ÉTAPE 2 : Initialisation de la Base de Données ---
 // Le DatabaseInitializer vérifie si les tables existent et crée le compte admin si nécessaire.

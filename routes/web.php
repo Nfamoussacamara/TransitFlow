@@ -1,8 +1,10 @@
 <?php
 
 // Importation des contrôleurs utilisés dans les routes.
-use App\Controllers\TransitController; // Gère le Dashboard, les Expéditions, les Factures, les Paramètres.
-use App\Controllers\AuthController;    // Gère la Connexion et la Déconnexion.
+use App\Controllers\TransitController; 
+use App\Controllers\AuthController;    
+use App\Controllers\ClientController;  
+use App\Controllers\MainController;    
 
 /**
  * Fichier de routage de l'application (routes/web.php)
@@ -19,8 +21,17 @@ use App\Controllers\AuthController;    // Gère la Connexion et la Déconnexion.
  */
 
 // =============================================
+// ROUTES PUBLIQUES (Vitrine)
+// =============================================
+
+// Route racine vers la Landing Page publique.
+$router->get('/', [MainController::class, 'index']);
+
+// Route vers la page "À Propos".
+$router->get('/about', [MainController::class, 'about']);
+
+// =============================================
 // ROUTES D'AUTHENTIFICATION (Publiques)
-// Ces routes sont accessibles SANS être connecté.
 // =============================================
 
 // Affiche le formulaire de connexion (page login.php).
@@ -37,11 +48,14 @@ $router->get('/logout', [AuthController::class, 'logout']);
 // L'accès est filtré automatiquement dans le constructeur de TransitController.
 // =============================================
 
-// Page d'accueil : Tableau de Bord (Dashboard) avec les statistiques et la carte.
-$router->get('/', [TransitController::class, 'dashboard']);
+// Page d'accueil Admin : Tableau de Bord (Dashboard).
+$router->get('/dashboard', [TransitController::class, 'dashboard']);
+
+// Page de l'Espace Client sécurisé.
+$router->get('/client', [ClientController::class, 'dashboard']);
 
 // Soumission du formulaire d'ajout ou de modification d'un transit.
-$router->post('/', [TransitController::class, 'storeTransit']);
+$router->post('/dashboard', [TransitController::class, 'storeTransit']);
 
 // Page listant toutes les expéditions de marchandises.
 $router->get('/expeditions', [TransitController::class, 'expeditions']);

@@ -56,13 +56,6 @@ class AuthService
     /**
      * Vérifie qu'un mot de passe brut correspond au hash stocké en base.
      *
-     * POURQUOI password_verify() ?
-     * ============================
-     * On ne stocke jamais les mots de passe en clair en base de données.
-     * On stocke un "hash" (empreinte chiffrée) généré par password_hash().
-     * password_verify() compare le mot de passe saisi par l'utilisateur
-     * avec ce hash pour valider ou rejeter la connexion.
-     *
      * @param string $motDePasseBrut  Le mot de passe saisi dans le formulaire.
      * @param string $hashEnBase      Le hash stocké en base de données.
      * @return bool true si le mot de passe est correct, false sinon.
@@ -70,5 +63,25 @@ class AuthService
     public function verifierMotDePasse(string $motDePasseBrut, string $hashEnBase): bool
     {
         return password_verify($motDePasseBrut, $hashEnBase);
+    }
+
+    /**
+     * Crée un compte utilisateur de type 'client' lié à un client existant.
+     * L'email du client est utilisé comme identifiant (username).
+     *
+     * @param string $email     L'email (servira d'identifiant username).
+     * @param string $hashed    Le mot de passe déjà haché.
+     * @param int    $clientId  L'ID du client dans la table clients.
+     */
+    public function createClientAccount(string $email, string $hashed, int $clientId): void
+    {
+        $stmt = $this->pdo->prepare(
+            "INSERT INTO utilisateurs (username, password, role, client_id) VALUES (:username, :password, 'client', :client_id)"
+        );
+        $stmt->execute([
+            ':username'  => $email,
+            ':password'  => $hashed,
+            ':client_id' => $clientId,
+        ]);
     }
 }

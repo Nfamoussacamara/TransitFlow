@@ -1,5 +1,8 @@
 # TransitPro — Gestion de Transits et Facturation
 
+> [!TIP]
+> 🎓 **DOCUMENTATION DE PRÉSENTATION (EXPOSÉ) :** Une documentation ultra-complète conçue spécialement pour votre exposé oral et détaillant toute la structure, les calculs, la sécurité et un scénario de démonstration est disponible dans le fichier [DOCUMENTATION_EXPOSE.md](file:///d:/transit/docs/DOCUMENTATION_EXPOSE.md).
+
 Ce projet est une application web de gestion des flux logistiques (transits de marchandises) et de leur facturation. Il a été conçu avec une architecture modulaire et découplée pour faciliter le travail en équipe.
 
 ---

@@ -10,6 +10,35 @@ namespace App\Core;
  * utilitaires de rendu de vue (view) et de redirection HTTP (redirect).
  */
 abstract class Controller {
+
+    /**
+     * Démarre la session PHP de manière sécurisée si elle n'est pas déjà active.
+     */
+    protected function startSession(): void {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    /**
+     * Vérifie si l'utilisateur est connecté. Redirige vers /login sinon.
+     * 
+     * @param string|null $requiredRole Rôle optionnel requis (ex: 'admin' ou 'client').
+     */
+    protected function checkAuth(?string $requiredRole = null): void {
+        $this->startSession();
+
+        if (!isset($_SESSION['user_id'])) {
+            $this->redirect('/login');
+            exit;
+        }
+
+        if ($requiredRole !== null && ($_SESSION['role'] ?? '') !== $requiredRole) {
+            // Si l'utilisateur est connecté mais n'a pas le bon rôle.
+            $this->redirect('/login?error=unauthorized');
+            exit;
+        }
+    }
     
     /**
      * Charge un fichier de Vue PHP et lui transmet un tableau de données.
