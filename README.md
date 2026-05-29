@@ -1,76 +1,95 @@
-# 🚚 TransitPro — Solution Intégrée de Gestion Logistique & Facturation
+# 🚚 TransitPro — Système de Gestion Logistique & Facturation
 
-TransitPro est une plateforme modulaire conçue pour simplifier le suivi des flux de transit international et automatiser la facturation logistique. Ce projet illustre une architecture logicielle robuste en PHP natif, respectant les principes POO et le patron de conception MVC.
-
----
-
-## 🌟 Fonctionnalités du Système
-
-Le projet est divisé en deux sections distinctes offrant des expériences sur-mesure pour chaque type d'utilisateur.
-
-### 🏢 Espace Administrateur (Gestion & Pilotage)
-Le tableau de bord administrateur est le cœur opérationnel de TransitPro :
-- **Pilotage de l'Activité** : Vue globale sur le nombre d'expéditions, les transits en cours et les arrivées prévues.
-- **Gestion du Fret** : Création, modification et suppression de transits.
-- **Cartographie Interactive** : Visualisation des itinéraires via Leaflet.js, calcul automatique des distances et suggestion intelligente de villes.
-- **Facturation Automatisée** : Génération immédiate d'une facture PDF lors de l'enregistrement d'un nouveau transit, basée sur les tarifs officiels (GNF).
-- **Formatage Professionnel** : Exportation de factures PDF ultra-précises avec logo, détails transporteur et totaux HT/TVA/TTC.
-
-### 👤 Espace Client (Consultation & Transparence)
-Une interface épurée permettant au client de suivre ses commandes en toute autonomie :
-- **Suivi en Temps Réel** : Barre de progression dynamique simulant l'avancée du transit entre le départ et l'arrivée prévue.
-- **Historique et Archives** : Consultation de la liste complète des expéditions passées et actuelles.
-- **Téléchargement Autonome** : Accès direct au téléchargement des factures au format PDF à tout moment.
-- **Statistiques Personnelles** : Résumé visuel de l'activité du client (total expéditions, colis livrés, colis en attente).
+TransitPro est une application web métier de haute performance conçue pour digitaliser l'intégralité de la chaîne logistique de transit. Du pilotage des flux à la génération automatique des factures, la plateforme offre une solution clé en main pour les transitaires et une visibilité totale pour les clients.
 
 ---
 
-## 🏗️ Architecture Technique
+## 🌟 Fonctionnalités Détaillées
 
-TransitPro utilise une structure **MVC (Modèle-Vue-Contrôleur)** découplée, complétée par une couche **Repository** et **Service** pour garantir la scalabilité et la maintenabilité.
+### 🏢 Espace Administrateur (Pilotage Central)
+L'interface administrateur est un véritable tableau de bord opérationnel :
+- **Dashboard Analytique** : Statistiques en temps réel sur le volume de fret, les revenus potentiels et les statuts de livraison.
+- **Gestion Avancée du Transit** : 
+    - Création de fiches de transit avec liaison dynamique client/marchandise.
+    - Modification à la volée des informations de transport (coût, dates, itinéraire).
+- **Moteur de Cartographie (Leaflet.js)** :
+    - Visualisation interactive du trajet sur une mappemonde.
+    - Géocodage inversé (Nominatim API) : cliquez sur la carte pour définir une ville de départ/arrivée.
+    - Calcul de distance automatique pour l'estimation logistique.
+- **Système de Facturation PDF** :
+    - Génération instantanée conforme aux normes comptables en GNF.
+    - Capture haute précision isolée pour éviter les erreurs de rendu navigateur.
 
-### Structure des Dossiers
+### 👤 Espace Client (Expérience Utilisateur)
+Une interface moderne pensée pour la transparence :
+- **Tracking Dynamique** : Une barre de progression intelligente calcule l'avancée du colis en fonction de l'heure actuelle du serveur, du départ et de l'arrivée estimée.
+- **Portefeuille de Factures** : Accès à l'historique complet des documents comptables gelés (non modifiables par le client pour garantir l'intégrité).
+- **Statistiques de Flux** : Visualisation rapide du nombre de conteneurs réceptionnés vs en attente.
+
+---
+
+## 🏗️ Architecture Technique (Standard Entreprise)
+
+TransitPro repose sur une architecture PHP 8.1+ découplée, suivant les principes du Clean Code.
+
+### Patron de Conception : MVC + Service + Repository
+1. **Modèles (`app/Models/`)** : Objets PHP purs (Entities) représentant les données métier (Facture, Transit, Client). Ils ne contiennent aucune logique de base de données.
+2. **Repositories (`app/Repositories/`)** : La seule couche autorisée à manipuler le SQL. Utilise PDO avec requêtes préparées pour une sécurité totale contre les injections.
+3. **Services (`app/Services/`)** : L'intelligence de l'application. Orchestre les calculs de prix, les validations de dates et l'initialisation automatique du système.
+4. **Contrôleurs (`app/Controllers/`)** : Passerelles légères gérant l'aiguillage des requêtes HTTP.
+
+### Structure du Code
 ```text
 transit/
-├── app/                      # Cœur applicatif
-│   ├── Controllers/         # Orchestre les requêtes et les vues
-│   ├── Models/              # Entités PHP (Client, Facture, Transit, etc.)
-│   ├── Repositories/        # Couche d'accès aux données (Requêtes SQL & Hydratation)
-│   ├── Services/            # Logique métier (Calculs, Validations, Initialisation)
-│   └── Views/               # Fichiers PHP/HTML (Dashboard, Templates PDF, Partials)
-├── config/                  # Configuration (Base de données, Constantes)
-├── public/                  # Point d'entrée web (Index.php, Assets CSS/JS/Images)
-├── routes/                  # Définition des URL et actions associées
-└── vendor/                  # Autoloader PSR-4 personnalisé
+├── app/
+│   ├── Core/                # Noyau du framework (Router, Base Model, Controller)
+│   ├── Models/              # Objets métier (POPO - Plain Old PHP Objects)
+│   ├── Repositories/        # Couche d'Accès aux Données (DAL)
+│   ├── Services/            # Logique métier et orchestrations
+│   └── Views/               # Rendus UI et Templates PDF
+├── config/                  # Configuration BDD et Paramètres Globaux
+├── public/                  # Point d'entrée unique (Rewrite standard Apache)
+└── database/                # Scripts SQL (si nécessaire) et log d'initialisation
 ```
 
 ---
 
-## 🛡️ Guide pour les Développeurs & Collaborateurs
+## ⚙️ Initialisation Automatisée (`DatabaseInitializer`)
 
-### Principes de Code
-1. **Zéro SQL dans les Vues/Contrôleurs** : Toute requête doit passer par les `Repositories`. Toute logique métier complexe (calcul de prix, validation d'itinéraire) doit résider dans les `Services`.
-2. **Hydratation des Objets** : Les données sortant de la base sont systématiquement converties en Objets (`Models`) par le Repository. Ne manipulez jamais de tableaux associatifs bruts dans la logique métier.
-3. **Sécurité des Données** : Utilisez systématiquement les requêtes préparées via PDO pour prévenir les injections SQL.
-4. **Design System** : L'interface utilise un système de design cohérent basé sur des variables CSS (`:root`) pour les couleurs et les espacements.
-
-### Installation & Contribution
-1. **Environnement** : Serveur PHP 8.0+ et MySQL 5.7+ (compatible WAMP, XAMPP, MAMP).
-2. **Setup BDD** : L'application initialise sa propre base de données au premier lancement. Assurez-vous que les identifiants dans `config/Database.php` sont corrects.
-3. **Ajout de Fonctionnalités** :
-    - Pour une nouvelle entité : Créer le `Model`, puis son `Repository`, puis ajouter les méthodes nécessaires dans `TransitService`.
-    - Pour une nouvelle vue : Ajouter la route dans `routes/` (ou le dispatcher index.php) et créer le fichier correspondant dans `app/Views/`.
+L'application est conçue pour être déployée sans effort. Au premier lancement :
+1. **Création des Tables** : Les tables `pays`, `villes`, `clients`, `marchandises`, `modes_transport`, `transits` et `factures` sont générées automatiquement.
+2. **Alimentation des Référentiels** : Le système injecte les données géographiques de base et configure les tarifs unitaires par défaut.
+3. **Préparation de la Facturation** : Les triggers et procédures de calcul (en PHP) sont prêts à l'emploi.
 
 ---
 
-## 💰 Logique de Tarification (GNF)
-Les tarifs sont calculés automatiquement selon le mode de transport :
-- **Aérien** : 450 000 GNF / kg
-- **Maritime** : 125 000 GNF / m²
-- **Terrestre** : 35 000 GNF / kg
-- **Ferroviaire** : 18 000 GNF / kg
-- **TVA** : 20% applicable sur tous les montants brut (HT).
+## 💰 Logique Comptable & Calculs (GNF)
+
+La facturation est basée sur une grille tarifaire dynamique :
+- **Aérien** : `450 000 GNF` par kg (Basé sur le **Poids**).
+- **Maritime** : `125 000 GNF` par m² (Basé sur la **Surface**).
+- **Terrestre** : `35 000 GNF` par kg.
+- **Ferroviaire** : `18 000 GNF` par kg.
+
+**Formule de Calcul :**
+- **Montant HT** : $Base\ (Poids\ ou\ Surface) \times Tarif\ Unitaire$.
+- **TVA (20%)** : $Montant\ HT \times 0.20$.
+- **Total TTC** : $Montant\ HT + TVA$.
 
 ---
 
-© 2026 TransitPro Logistics. Conçu avec excellence pour l'Université de Labé, République de Guinée.
+## 🛠️ Guide du Développeur (Collaborateurs)
+
+### Recommandations de Codage
+- **Indépendance des Vues** : Ne jamais appeler une méthode du Repository dans une vue. Utilisez les variables transmises par le contrôleur.
+- **Extensions Logistiques** : Pour ajouter un nouveau mode de transport, modifiez simplement le `DatabaseInitializer` et la logique de calcul dans `FacturationService`.
+- **Système de Design** : L'interface utilise CSS Grid et Flexbox avec des variables de couleurs centralisées dans `public/index.php` (ou assets liés).
+
+### Installation Locale
+1. Clonez le dépôt dans votre dossier `www` ou `htdocs`.
+2. Configurez vos accès MySQL dans `config/Database.php`.
+3. Lancez votre navigateur sur `localhost/transit` : le système s'initialise seul.
+
+---
+
+© 2026 TransitPro — Excellence Logistique. Développé pour la République de Guinée.
