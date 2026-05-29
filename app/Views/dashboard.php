@@ -21,7 +21,7 @@
        ========================================================================= -->
     <aside class="sidebar">
         <div class="brand-logo-container">
-            <a href="/transit/dashboard" class="brand-logo-link">
+            <a href="/transit/" class="brand-logo-link">
                 <div class="brand-logo-mark">
                     <svg viewBox="0 0 24 24" class="logo-svg">
                         <path d="M4 15l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
@@ -58,6 +58,15 @@
                 </a>
             </li>
         </ul>
+        
+        <div class="sidebar-footer">
+            <div class="menu-item">
+                <a href="/transit/" style="color: rgba(255, 255, 255, 0.75);">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Retour au site
+                </a>
+            </div>
+        </div>
     </aside>
 
     <!-- Main Content Area -->
@@ -395,6 +404,7 @@
 <!-- JS AOS & Swiper JS CDNs -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
     // Initialisation AOS (Animate on Scroll)
@@ -711,6 +721,9 @@
                 <!-- Boutons à droite -->
                 <div style="display: flex; gap: 10px;">
                     <button type="button" class="btn-cancel" style="padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="closeDetailsModal()">Fermer</button>
+                    <button type="button" class="btn-submit" style="background: rgb(var(--color-brand-cyan)); border-color: rgb(var(--color-brand-cyan)); padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="downloadAdminFacture()">
+                        📥 Télécharger PDF
+                    </button>
                     <button type="button" class="btn-submit" style="padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="enableEditMode()">
                         ✏️ Modifier le Transit
                     </button>

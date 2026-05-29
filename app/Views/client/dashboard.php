@@ -232,10 +232,7 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
             gap: 6px;
         }
         /* ── Factures table ── */
-        .facture-table thead th { background: #f8fafc; }
-        .facture-table tbody tr:hover td {
-            background: rgba(4, 88, 224, 0.025);
-        }
+        /* Styles de table hérités de style.css */
         /* ── Empty state ── */
         .empty-state {
             text-align: center;
@@ -497,7 +494,7 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
         <!-- TOP NAVBAR -->
         <nav class="top-navbar">
             <div class="navbar-title">
-                <a href="/transit/client" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
+                <a href="/transit/" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
                     <svg viewBox="0 0 24 24" width="24" height="24" style="color: rgb(4, 88, 224);">
                         <path d="M4 15l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                         <path d="M4 19l8-8 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
@@ -901,6 +898,8 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
 
 <!-- AOS JS -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- html2pdf.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
     // Initialisation AOS
     AOS.init({ duration: 550, easing: 'ease-out-cubic', once: true, offset: 40 });
@@ -1002,8 +1001,31 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
     }
 
     function downloadFacture() {
-        alert('Téléchargement du PDF en cours...');
-        // Ajouter la logique de téléchargement PDF ici
+        const element = document.querySelector('.modal-content');
+        const numero = document.getElementById('modalFactureNumero').textContent;
+        
+        // Options pour le PDF
+        const opt = {
+            margin:       [10, 10],
+            filename:     `Facture_${numero}_TransitPro.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Masquer temporairement les éléments non désirés (boutons, bouton fermer)
+        const footer = element.querySelector('.modal-footer');
+        const closeBtn = element.querySelector('.modal-close');
+        
+        footer.style.display = 'none';
+        closeBtn.style.visibility = 'hidden';
+
+        // Générer le PDF
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restaurer après la génération
+            footer.style.display = 'flex';
+            closeBtn.style.visibility = 'visible';
+        });
     }
 
     // Fermer la modale en cliquant en dehors

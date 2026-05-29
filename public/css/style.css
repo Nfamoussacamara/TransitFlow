@@ -76,6 +76,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    flex: 1; /* Remplit l'espace pour pousser le footer vers le bas */
+}
+
+.sidebar-footer {
+    padding: 1.5rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .menu-item a {
@@ -453,20 +459,31 @@ body {
 }
 
 .custom-table th {
-    padding: 0.85rem 1rem;
+    padding: 1rem;
     font-family: var(--font-heading);
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--color-text-muted);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.09); /* Ligne de tête grisée bien marquée */
+    color: #ffffff;
+    background-color: #2e7d32; /* Vert professionnel */
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .custom-table td {
     padding: 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.09); /* Séparateur grisé entre chaque rapport */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     color: #334155;
+    font-weight: 500;
+}
+
+/* Alternance des couleurs de lignes (Zebra striping) */
+.custom-table tbody tr:nth-child(odd) {
+    background-color: #f1f5f9; /* Gris légèrement plus prononcé */
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: #ffffff; /* Blanc pour les lignes paires */
 }
 
 /* Supprimer le séparateur de la dernière ligne pour un rendu propre */
@@ -475,7 +492,7 @@ body {
 }
 
 .custom-table tr:hover td {
-    background: rgba(var(--color-brand-royal), 0.025);
+    background: rgba(46, 125, 50, 0.05); /* Effet hover vert léger */
 }
 
 .badge {
