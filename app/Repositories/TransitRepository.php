@@ -85,7 +85,7 @@ class TransitRepository
             JOIN clients c ON m.client_id = c.id
             JOIN modes_transport mt ON t.mode_transport_id = mt.id
             LEFT JOIN factures f ON f.transit_id = t.id
-            ORDER BY t.date_depart DESC
+            ORDER BY t.id DESC
         ";
 
         $stmt = $this->pdo->query($query);
@@ -122,7 +122,7 @@ class TransitRepository
             JOIN marchandises m ON t.marchandise_id = m.id
             JOIN clients c ON m.client_id = c.id
             JOIN modes_transport mt ON t.mode_transport_id = mt.id
-            ORDER BY f.date_facturation DESC
+            ORDER BY f.id DESC
         ";
 
         $stmt = $this->pdo->query($query);
@@ -152,8 +152,8 @@ class TransitRepository
         }
 
         $parts = explode('|', $cityData);
-        $nomVille = htmlspecialchars(trim($parts[1] ?? 'Inconnu'));
-        $nomPays = htmlspecialchars(trim($parts[2] ?? 'Inconnu'));
+        $nomVille = trim($parts[1] ?? 'Inconnu');
+        $nomPays = trim($parts[2] ?? 'Inconnu');
         $lat = isset($parts[3]) && is_numeric($parts[3]) ? (float)$parts[3] : null;
         $lng = isset($parts[4]) && is_numeric($parts[4]) ? (float)$parts[4] : null;
 

@@ -11,7 +11,7 @@
     <!-- Leaflet.js Cartographie -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Notre Design System local (avec cache-buster) -->
-    <link rel="stylesheet" href="/transit/public/css/style.css?v=2.9">
+    <link rel="stylesheet" href="/transit/public/css/style.css?v=3.5">
 </head>
 
 <body>
@@ -143,25 +143,27 @@
             <?php if (isset($_GET['success'])): ?>
                 <!-- Bannière de succès après action -->
                 <div class="flash-success" id="flash-msg">
-                    <?php
-                    if ($_GET['success'] === '1') {
-                        echo "✅ &nbsp; Nouveau transit enregistré avec succès et facture générée automatiquement !";
-                    } elseif ($_GET['success'] === '2') {
-                        echo "✅ &nbsp; Le transit a été modifié avec succès et sa facture a été recalculée !";
-                    } elseif ($_GET['success'] === 'delete') {
-                        echo "🗑️ &nbsp; Le transit et tous ses enregistrements liés (marchandise, facture) ont été supprimés avec succès !";
-                    }
-                    ?>
+                    <span>
+                        <?php
+                        if ($_GET['success'] === '1') {
+                            echo "Nouveau transit enregistré avec succès et facture générée automatiquement !";
+                        } elseif ($_GET['success'] === '2') {
+                            echo "Le transit a été modifié avec succès et sa facture a été recalculée !";
+                        } elseif ($_GET['success'] === 'delete') {
+                            echo "Le transit et tous ses enregistrements liés (marchandise, facture) ont été supprimés avec succès !";
+                        }
+                        ?>
+                    </span>
                     <button onclick="document.getElementById('flash-msg').remove()"
-                        style="background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;margin-left:1rem;">✕</button>
+                        style="background:none;border:none;color:inherit;cursor:pointer;font-size:1.2rem;opacity:0.6;">✕</button>
                 </div>
             <?php endif; ?>
             <?php if (isset($_GET['error'])): ?>
                 <!-- Bannière d'erreur après action -->
                 <div class="flash-error" id="flash-error-msg">
-                    ❌ &nbsp; <?= htmlspecialchars(urldecode($_GET['error'])) ?>
+                    <span><?= htmlspecialchars(urldecode($_GET['error'])) ?></span>
                     <button onclick="document.getElementById('flash-error-msg').remove()"
-                        style="background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;margin-left:1rem;">✕</button>
+                        style="background:none;border:none;color:inherit;cursor:pointer;font-size:1.2rem;opacity:0.6;">✕</button>
                 </div>
             <?php endif; ?>
 
@@ -413,15 +415,15 @@
                                 ?>
                                 <tr>
                                     <td>
-                                        <strong><?= htmlspecialchars($marchandiseObj->getDesignation()) ?></strong>
+                                        <strong><?= htmlspecialchars(htmlspecialchars_decode($marchandiseObj->getDesignation())) ?></strong>
                                     </td>
                                     <td>
-                                        <?= htmlspecialchars($marchandiseObj->getClient()->getNom()) ?>
+                                        <?= htmlspecialchars(htmlspecialchars_decode($marchandiseObj->getClient()->getNom())) ?>
                                     </td>
                                     <td>
-                                        <?= htmlspecialchars($transitObj->getVilleDepart()->getNom()) ?>
+                                        <?= htmlspecialchars(htmlspecialchars_decode($transitObj->getVilleDepart()->getNom())) ?>
                                         ➜
-                                        <?= htmlspecialchars($transitObj->getVilleArrivee()->getNom()) ?>
+                                        <?= htmlspecialchars(htmlspecialchars_decode($transitObj->getVilleArrivee()->getNom())) ?>
                                     </td>
                                     <td>
                                         <span
@@ -688,26 +690,54 @@
                     <div class="form-section-title" style="margin-top: 1.25rem;">Itinéraire & Transport</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="ville_depart_id">Ville de départ</label>
-                            <select id="ville_depart_id" name="ville_depart_id" required>
-                                <option value="">-- Départ --</option>
-                                <?php foreach ($listeVilles as $v): ?>
-                                    <option value="<?= $v['id'] ?>" data-lat="<?= $v['latitude'] ?? '' ?>"
-                                        data-lng="<?= $v['longitude'] ?? '' ?>"><?= htmlspecialchars($v['nom']) ?>
-                                        (<?= htmlspecialchars($v['pays']) ?>)</option>
-                                <?php endforeach; ?>
-                            </select>
+                            <div class="city-field-header">
+                                <label for="ville_depart_id">Ville de départ</label>
+                                <button type="button" class="city-toggle-link" id="toggle-btn-depart"
+                                    onclick="toggleCityManual('depart', 'ville_depart_id')">✏️ Saisir manuellement</button>
+                            </div>
+                            <div id="depart-select-wrap">
+                                <select id="ville_depart_id" name="ville_depart_id" required>
+                                    <option value="">-- Départ --</option>
+                                    <?php foreach ($listeVilles as $v): ?>
+                                        <option value="<?= $v['id'] ?>" data-lat="<?= $v['latitude'] ?? '' ?>"
+                                            data-lng="<?= $v['longitude'] ?? '' ?>"><?= htmlspecialchars($v['nom']) ?>
+                                            (<?= htmlspecialchars($v['pays']) ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="city-manual-panel" id="depart-manual-wrap">
+                                <div class="city-manual-inputs">
+                                    <input type="text" id="depart-manual-ville" placeholder="Ville (ex: Paris)"
+                                        oninput="applyManualCity('depart', 'ville_depart_id')">
+                                    <input type="text" id="depart-manual-pays" placeholder="Pays (ex: France)"
+                                        oninput="applyManualCity('depart', 'ville_depart_id')">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="ville_arrivee_id">Ville d'arrivée</label>
-                            <select id="ville_arrivee_id" name="ville_arrivee_id" required>
-                                <option value="">-- Arrivée --</option>
-                                <?php foreach ($listeVilles as $v): ?>
-                                    <option value="<?= $v['id'] ?>" data-lat="<?= $v['latitude'] ?? '' ?>"
-                                        data-lng="<?= $v['longitude'] ?? '' ?>"><?= htmlspecialchars($v['nom']) ?>
-                                        (<?= htmlspecialchars($v['pays']) ?>)</option>
-                                <?php endforeach; ?>
-                            </select>
+                            <div class="city-field-header">
+                                <label for="ville_arrivee_id">Ville d'arrivée</label>
+                                <button type="button" class="city-toggle-link" id="toggle-btn-arrivee"
+                                    onclick="toggleCityManual('arrivee', 'ville_arrivee_id')">✏️ Saisir manuellement</button>
+                            </div>
+                            <div id="arrivee-select-wrap">
+                                <select id="ville_arrivee_id" name="ville_arrivee_id" required>
+                                    <option value="">-- Arrivée --</option>
+                                    <?php foreach ($listeVilles as $v): ?>
+                                        <option value="<?= $v['id'] ?>" data-lat="<?= $v['latitude'] ?? '' ?>"
+                                            data-lng="<?= $v['longitude'] ?? '' ?>"><?= htmlspecialchars($v['nom']) ?>
+                                            (<?= htmlspecialchars($v['pays']) ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="city-manual-panel" id="arrivee-manual-wrap">
+                                <div class="city-manual-inputs">
+                                    <input type="text" id="arrivee-manual-ville" placeholder="Ville (ex: New York)"
+                                        oninput="applyManualCity('arrivee', 'ville_arrivee_id')">
+                                    <input type="text" id="arrivee-manual-pays" placeholder="Pays (ex: USA)"
+                                        oninput="applyManualCity('arrivee', 'ville_arrivee_id')">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -932,22 +962,50 @@
                     <div class="form-section-title" style="margin-top: 1.25rem;">Itinéraire & Transport</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="edit-ville-depart-id">Ville de départ</label>
-                            <select id="edit-ville-depart-id" name="ville_depart_id" required>
-                                <?php foreach ($listeVilles as $v): ?>
-                                    <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nom']) ?>
-                                        (<?= htmlspecialchars($v['pays']) ?>)</option>
-                                <?php endforeach; ?>
-                            </select>
+                            <div class="city-field-header">
+                                <label for="edit-ville-depart-id">Ville de départ</label>
+                                <button type="button" class="city-toggle-link" id="toggle-btn-edit-depart"
+                                    onclick="toggleCityManual('edit-depart', 'edit-ville-depart-id')">✏️ Saisir manuellement</button>
+                            </div>
+                            <div id="edit-depart-select-wrap">
+                                <select id="edit-ville-depart-id" name="ville_depart_id" required>
+                                    <?php foreach ($listeVilles as $v): ?>
+                                        <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nom']) ?>
+                                            (<?= htmlspecialchars($v['pays']) ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="city-manual-panel" id="edit-depart-manual-wrap">
+                                <div class="city-manual-inputs">
+                                    <input type="text" id="edit-depart-manual-ville" placeholder="Ville"
+                                        oninput="applyManualCity('edit-depart', 'edit-ville-depart-id')">
+                                    <input type="text" id="edit-depart-manual-pays" placeholder="Pays"
+                                        oninput="applyManualCity('edit-depart', 'edit-ville-depart-id')">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="edit-ville-arrivee-id">Ville d'arrivée</label>
-                            <select id="edit-ville-arrivee-id" name="ville_arrivee_id" required>
-                                <?php foreach ($listeVilles as $v): ?>
-                                    <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nom']) ?>
-                                        (<?= htmlspecialchars($v['pays']) ?>)</option>
-                                <?php endforeach; ?>
-                            </select>
+                            <div class="city-field-header">
+                                <label for="edit-ville-arrivee-id">Ville d'arrivée</label>
+                                <button type="button" class="city-toggle-link" id="toggle-btn-edit-arrivee"
+                                    onclick="toggleCityManual('edit-arrivee', 'edit-ville-arrivee-id')">✏️ Saisir manuellement</button>
+                            </div>
+                            <div id="edit-arrivee-select-wrap">
+                                <select id="edit-ville-arrivee-id" name="ville_arrivee_id" required>
+                                    <?php foreach ($listeVilles as $v): ?>
+                                        <option value="<?= $v['id'] ?>"><?= htmlspecialchars($v['nom']) ?>
+                                            (<?= htmlspecialchars($v['pays']) ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="city-manual-panel" id="edit-arrivee-manual-wrap">
+                                <div class="city-manual-inputs">
+                                    <input type="text" id="edit-arrivee-manual-ville" placeholder="Ville"
+                                        oninput="applyManualCity('edit-arrivee', 'edit-ville-arrivee-id')">
+                                    <input type="text" id="edit-arrivee-manual-pays" placeholder="Pays"
+                                        oninput="applyManualCity('edit-arrivee', 'edit-ville-arrivee-id')">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -1390,11 +1448,80 @@
             }, 150);
         }
 
+        function toggleCityManual(prefix, selectId) {
+            const selectWrap = document.getElementById(prefix + '-select-wrap');
+            const manualWrap = document.getElementById(prefix + '-manual-wrap');
+            const btn = document.getElementById('toggle-btn-' + prefix);
+            const select = document.getElementById(selectId);
+
+            if (manualWrap.style.display === 'flex') {
+                manualWrap.style.display = 'none';
+                selectWrap.style.display = 'block';
+                btn.textContent = '✏️ Saisir manuellement';
+                document.getElementById(prefix + '-manual-ville').value = '';
+                document.getElementById(prefix + '-manual-pays').value = '';
+                if (select.options.length > 0 && select.options[0].value.startsWith('NEW|')) {
+                    select.remove(0);
+                }
+                select.value = '';
+            } else {
+                manualWrap.style.display = 'flex';
+                selectWrap.style.display = 'none';
+                btn.textContent = '↩ Choisir dans la liste';
+            }
+            if (typeof updateMap === 'function') updateMap();
+        }
+
+        function applyManualCity(prefix, selectId) {
+            const ville = document.getElementById(prefix + '-manual-ville').value.trim();
+            const pays = document.getElementById(prefix + '-manual-pays').value.trim();
+            const select = document.getElementById(selectId);
+
+            if (!ville || !pays) {
+                if (select.options.length > 0 && select.options[0].value.startsWith('NEW|')) {
+                    select.remove(0);
+                }
+                select.value = '';
+                return;
+            }
+
+            const newVal = `NEW|${ville}|${pays}||`;
+            const newText = `${ville} (${pays})`;
+
+            if (select.options.length > 0 && select.options[0].value.startsWith('NEW|')) {
+                select.options[0].value = newVal;
+                select.options[0].text = newText;
+            } else {
+                const opt = new Option(newText, newVal);
+                select.add(opt, 0);
+            }
+            select.value = newVal;
+        }
+
         function closeNewTransitModal() {
             document.getElementById('modal-transit').classList.remove('is-open');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Nettoyage de l'URL pour éviter que le message flash revienne au rafraîchissement
+            const url = new URL(window.location.href);
+            if (url.searchParams.has('success') || url.searchParams.has('error')) {
+                url.searchParams.delete('success');
+                url.searchParams.delete('error');
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+
+            // Auto-disparition des messages après 6 secondes
+            const flash = document.getElementById('flash-msg') || document.getElementById('flash-error-msg');
+            if (flash) {
+                setTimeout(() => {
+                    flash.style.opacity = '0';
+                    flash.style.transform = 'translateY(-10px)';
+                    flash.style.transition = 'all 0.5s ease';
+                    setTimeout(() => flash.remove(), 500);
+                }, 6000);
+            }
+
             const btnNouveau = document.getElementById('btn-nouveau-transit');
             if (btnNouveau) btnNouveau.addEventListener('click', openNewTransitModal);
 

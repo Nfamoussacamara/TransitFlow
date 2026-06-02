@@ -126,7 +126,7 @@ class TransitService
         $clientId = $this->resolveClient($data['client_nom'], $data['client_email']);
 
         // Insertion marchandise
-        $cleanDesignation = htmlspecialchars(trim($data['designation']));
+        $cleanDesignation = trim($data['designation']);
         $marchandiseId = $this->repository->insertMarchandise([
             'designation' => $cleanDesignation,
             'poids'       => (float)$data['poids'],
@@ -159,7 +159,7 @@ class TransitService
         $clientId = $this->resolveClient($data['client_nom'], $data['client_email']);
 
         // Mise à jour marchandise
-        $cleanDesignation = htmlspecialchars(trim($data['designation']));
+        $cleanDesignation = trim($data['designation']);
         $this->repository->updateMarchandise($marchandiseId, [
             'designation' => $cleanDesignation,
             'poids'       => (float)$data['poids'],
@@ -180,7 +180,7 @@ class TransitService
      */
     private function validerDonnees(array $data): void
     {
-        if ((int)$data['ville_depart_id'] === (int)$data['ville_arrivee_id']) {
+        if ($data['ville_depart_id'] === $data['ville_arrivee_id']) {
             throw new Exception("La ville de départ et de destination doivent être différentes.");
         }
         if ((float)$data['poids'] <= 0 || (float)$data['surface'] <= 0) {
@@ -196,8 +196,8 @@ class TransitService
      */
     private function resolveClient(string $nom, string $email): int
     {
-        $cleanEmail = htmlspecialchars(trim($email));
-        $cleanNom   = htmlspecialchars(trim($nom));
+        $cleanEmail = trim($email);
+        $cleanNom   = trim($nom);
 
         $clientId = $this->repository->findClientIdByEmail($cleanEmail);
 
@@ -219,8 +219,8 @@ class TransitService
         
         // Résolution du client avec ses vraies informations
         $clientObj = new Client(
-            htmlspecialchars(trim($data['client_nom'])),
-            htmlspecialchars(trim($data['client_email'])),
+            trim($data['client_nom']),
+            trim($data['client_email']),
             $clientId
         );
         $marchandiseObj = new Marchandise(

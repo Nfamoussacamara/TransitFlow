@@ -613,26 +613,33 @@ body {
    Bannière Flash (succès / erreur)
    ========================================================================= */
 
-.flash-success {
+.flash-success, .flash-error {
     display: flex;
     align-items: center;
-    padding: 0.75rem 2.5rem;
-    background: rgba(6, 182, 212, 0.08);
-    border-left: 3px solid rgb(var(--color-brand-cyan));
-    color: rgb(6, 130, 160);
-    font-size: 0.875rem;
+    justify-content: space-between;
+    padding: 0.6rem 1.5rem;
+    margin: 1rem 2.5rem 1rem 2.5rem;
+    font-size: 0.85rem;
     font-weight: 500;
+    border-radius: 6px;
+    width: fit-content;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    animation: slideDown 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-15px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.flash-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #065f46;
 }
 
 .flash-error {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 2.5rem;
-    background: rgba(239, 68, 68, 0.08);
-    border-left: 3px solid #ef4444;
-    color: #b91c1c;
-    font-size: 0.875rem;
-    font-weight: 500;
+    background: rgba(239, 68, 68, 0.1);
+    color: #991b1b;
 }
 
 /* =========================================================================
@@ -777,20 +784,22 @@ body {
 
 .form-group label {
     font-family: var(--font-heading);
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.4px;
 }
 
-.form-group input,
-.form-group select {
-    padding: 0.55rem 0.75rem;
+body .form-group input,
+body .form-group select {
+    width: 100%;
+    min-width: 0;
+    padding: 0.35rem 0.6rem !important;
     border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
+    border-radius: 6px;
     font-family: var(--font-body);
-    font-size: 0.875rem;
+    font-size: 0.8rem !important;
     color: var(--color-text-dark);
     background: #ffffff;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -850,5 +859,83 @@ body {
 .btn-submit:hover {
     background: rgb(3, 72, 185);
     transform: translateY(-1px);
+}
+
+/* =========================================================================
+   Saisie manuelle de ville (toggle liste ↔ manual)
+   ========================================================================= */
+
+.city-field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.city-field-header label {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.city-toggle-link {
+    background: none;
+    border: none;
+    color: rgb(var(--color-brand-royal));
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    font-family: var(--font-heading);
+    letter-spacing: 0.2px;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+}
+
+.city-toggle-link:hover {
+    opacity: 0.65;
+}
+
+.city-manual-panel {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.city-manual-inputs {
+    display: flex;
+    gap: 6px;
+}
+
+body .city-manual-inputs input {
+    flex: 1;
+    min-width: 0; /* Permet à l'input de rétrécir en flexbox */
+    width: 100%;
+    padding: 0.35rem 0.6rem !important;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.8rem !important;
+    color: var(--color-text-dark);
+    background: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+}
+
+.city-manual-inputs input:focus {
+    border-color: rgb(var(--color-brand-royal));
+    box-shadow: 0 0 0 3px rgba(var(--color-brand-royal), 0.12);
+}
+
+.city-manual-hint {
+    font-size: 0.71rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    font-style: italic;
+    line-height: 1.4;
 }
 
