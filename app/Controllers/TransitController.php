@@ -92,9 +92,9 @@ class TransitController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'nouveau_transit') {
             try {
                 $this->transitService->createTransit($_POST);
-                $this->redirect('?success=1');
+                $this->redirect('/dashboard?success=1');
             } catch (Exception $e) {
-                $this->redirect('?error=' . urlencode($e->getMessage()));
+                $this->redirect('/dashboard?error=' . urlencode($e->getMessage()));
             }
             
         // --- CAS 2 : MODIFICATION D'UN TRANSIT ---
@@ -107,7 +107,7 @@ class TransitController extends Controller
                 $this->redirect($redirectTo);
                 exit;
             } catch (Exception $e) {
-                $redirectTo = !empty($_POST['redirect_to']) ? $_POST['redirect_to'] : '?';
+                $redirectTo = !empty($_POST['redirect_to']) ? $_POST['redirect_to'] : '/dashboard';
                 $separator = (str_contains($redirectTo, '?')) ? '&' : '?';
                 $this->redirect($redirectTo . $separator . 'error=' . urlencode($e->getMessage()));
             }

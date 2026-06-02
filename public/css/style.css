@@ -624,6 +624,17 @@ body {
     font-weight: 500;
 }
 
+.flash-error {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 2.5rem;
+    background: rgba(239, 68, 68, 0.08);
+    border-left: 3px solid #ef4444;
+    color: #b91c1c;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
 /* =========================================================================
    Modale (Overlay + Boîte)
    ========================================================================= */

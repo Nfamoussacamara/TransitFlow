@@ -156,6 +156,14 @@
                         style="background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;margin-left:1rem;">✕</button>
                 </div>
             <?php endif; ?>
+            <?php if (isset($_GET['error'])): ?>
+                <!-- Bannière d'erreur après action -->
+                <div class="flash-error" id="flash-error-msg">
+                    ❌ &nbsp; <?= htmlspecialchars(urldecode($_GET['error'])) ?>
+                    <button onclick="document.getElementById('flash-error-msg').remove()"
+                        style="background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;margin-left:1rem;">✕</button>
+                </div>
+            <?php endif; ?>
 
             <!-- Header -->
             <header class="dashboard-header">
@@ -630,7 +638,7 @@
 
             <div class="split-modal-body">
                 <!-- Colonne Gauche : Formulaire -->
-                <form method="POST" action="?" class="split-form-col">
+                <form method="POST" action="/transit/dashboard" class="split-form-col">
                     <input type="hidden" name="action" value="nouveau_transit">
                     <input type="hidden" name="distance" id="distance_hidden" value="0">
 
@@ -879,7 +887,7 @@
 
             <!-- Mode Modification (Formulaire interactif) -->
             <div id="details-edit-mode" style="display: none;">
-                <form method="POST" action="?" class="modal-form">
+                <form method="POST" action="/transit/dashboard" class="modal-form">
                     <input type="hidden" name="action" value="modifier_transit">
                     <input type="hidden" id="edit-transit-id" name="transit_id">
 
@@ -1393,7 +1401,11 @@
             const selD = document.getElementById('ville_depart_id');
             const selA = document.getElementById('ville_arrivee_id');
             if (selD) selD.addEventListener('change', updateMap);
-            if (se    <!-- =========================================================================
+            if (selA) selA.addEventListener('change', updateMap);
+        });
+    </script>
+
+    <!-- =========================================================================
        Template Professionnel de Facture PDF (TransitPro Global)
        ========================================================================= -->
     <div id="invoice-pdf-template" style="position: absolute; left: -9999px; top: -9999px; opacity: 0; width: 210mm; height: 297mm; padding: 25mm; background: #fff; color: #1e293b; font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box;">
