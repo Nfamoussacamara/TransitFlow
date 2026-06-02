@@ -170,11 +170,11 @@
             <!-- Header -->
             <header class="dashboard-header">
                 <div class="header-title">
-                    <h1>Logistics Hub</h1>
-                    <p>Suivi en direct des expéditions de marchandises</p>
+                    <h1 data-aos="fade-right">Logistics Hub</h1>
+                    <p data-aos="fade-right" data-aos-delay="100">Suivi en direct des expéditions de marchandises</p>
                 </div>
                 <!-- Bouton Nouveau Transit aligné à droite du titre -->
-                <button id="btn-nouveau-transit" class="btn-nouveau-transit" onclick="openNewTransitModal()">
+                <button id="btn-nouveau-transit" class="btn-nouveau-transit" onclick="openNewTransitModal()" data-aos="fade-left">
                     <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
                         viewBox="0 0 24 24">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
