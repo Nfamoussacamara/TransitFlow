@@ -887,29 +887,23 @@
                 </div>
 
                 <!-- Pied de la modale (Actions) -->
-                <div class="modal-footer"
-                    style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 15px;">
+                <div class="modal-footer" style="padding: 1rem 1.5rem; margin-top: 2rem;">
                     <!-- Bouton Danger à gauche -->
                     <button type="button" class="btn-cancel"
-                        style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: rgb(239, 68, 68); font-weight: 600; padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;"
+                        style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.2); color: rgb(239, 68, 68); font-weight: 700; padding: 10px 15px; font-size: 0.85rem; margin-right: auto;"
                         onclick="triggerDelete()">
-                        🗑️ Supprimer le Fret
+                        Supprimer
                     </button>
-
+                    
                     <!-- Boutons à droite -->
-                    <div style="display: flex; gap: 10px;">
-                        <button type="button" class="btn-cancel"
-                            style="padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;"
-                            onclick="closeDetailsModal()">Fermer</button>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
                         <button type="button" class="btn-submit"
-                            style="background: rgb(var(--color-brand-cyan)); border-color: rgb(var(--color-brand-cyan)); padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;"
+                            style="background: rgb(var(--color-brand-cyan)); border-color: rgb(var(--color-brand-cyan)); padding: 10px 15px; font-size: 0.85rem;"
                             onclick="downloadAdminFacture(event)">
-                            📥 Télécharger PDF
+                            PDF
                         </button>
-                        <button type="button" class="btn-submit"
-                            style="padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;"
-                            onclick="enableEditMode()">
-                            ✏️ Modifier le Transit
+                        <button type="button" class="btn-submit" style="padding: 10px 15px; font-size: 0.85rem;" onclick="enableEditMode()">
+                            Modifier
                         </button>
                     </div>
                 </div>

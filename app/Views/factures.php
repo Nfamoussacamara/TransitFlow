@@ -345,19 +345,16 @@ declare(strict_types=1);
             </div>
 
             <!-- Pied de la modale (Actions) -->
-            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 15px;">
+            <div class="modal-footer" style="padding: 1rem 1.5rem; margin-top: 1.5rem; background: #f8fafc; margin: 0 -1.5rem -1.5rem -1.5rem; border-radius: 0 0 16px 16px;">
                 <!-- Bouton Danger à gauche -->
-                <button type="button" class="btn-cancel" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: rgb(239, 68, 68); font-weight: 600; padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="triggerDelete()">
-                    🗑️ Supprimer le Fret
+                <button type="button" class="btn-cancel" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.2); color: rgb(239, 68, 68); font-weight: 700; padding: 10px 15px; font-size: 0.85rem; margin-right: auto;" onclick="triggerDelete()">
+                    Supprimer
                 </button>
                 
-                <!-- Boutons à droite -->
-                <div style="display: flex; gap: 10px;">
-                    <button type="button" class="btn-cancel" style="padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="closeDetailsModal()">Fermer</button>
-                    <button type="button" class="btn-submit" style="padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s;" onclick="enableEditMode()">
-                        ✏️ Modifier le Transit
-                    </button>
-                </div>
+                <!-- Bouton Modifier à droite -->
+                <button type="button" class="btn-submit" style="padding: 10px 15px; font-size: 0.85rem;" onclick="enableEditMode()">
+                    Modifier
+                </button>
             </div>
         </div>
 
