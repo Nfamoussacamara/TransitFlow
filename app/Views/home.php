@@ -18,7 +18,7 @@
         rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/transit/public/css/style.css">
+    <link rel="stylesheet" href="/transit/transit/public/css/style.css">
 
     <style>
         /* Styles spécifiques à la Landing Page pour un effet WOW immédiat */
@@ -491,19 +491,19 @@
 <body>
 
     <nav class="landing-top-nav">
-        <a href="/transit/" class="landing-logo">
+        <a href="/transit/transit/" class="landing-logo">
             TRANSIT<span class="accent">PRO</span>
         </a>
         <div class="nav-links" style="display: flex; gap: 2rem; align-items: center; justify-content: center;">
-            <a href="/transit/#services" class="nav-link">Services</a>
-            <a href="/transit/about" class="nav-link">À Propos</a>
-            <a href="/transit/contact" class="nav-link">Contact</a>
+            <a href="/transit/transit/#services" class="nav-link">Services</a>
+            <a href="/transit/transit/about" class="nav-link">À Propos</a>
+            <a href="/transit/transit/contact" class="nav-link">Contact</a>
         </div>
         <div style="display: flex; justify-content: flex-end;">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="/transit/login" class="btn-login-white">Accéder à mon espace</a>
+                <a href="/transit/transit/login" class="btn-login-white">Accéder à mon espace</a>
             <?php else: ?>
-                <a href="/transit/login" class="btn-login-white">Connexion</a>
+                <a href="/transit/transit/login" class="btn-login-white">Connexion</a>
             <?php endif; ?>
         </div>
     </nav>
@@ -511,7 +511,7 @@
     <main>
         <!-- Hero Section -->
         <section class="hero"
-            style="background-image: url('/transit/public/images/hero-bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            style="background-image: url('/transit/transit/public/images/hero-bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
             <div class="hero-overlay"></div>
 
             <div class="hero-content">
@@ -735,7 +735,7 @@
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="author-avatar"
                                     style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #0458e0;">
-                                    <img src="/transit/public/images/testimonials/man-guinea.jpg" alt="Amadou Barry"
+                                    <img src="/transit/transit/public/images/testimonials/man-guinea.jpg" alt="Amadou Barry"
                                         style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
@@ -757,7 +757,7 @@
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="author-avatar"
                                     style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #06b6d4;">
-                                    <img src="/transit/public/images/testimonials/man-europe.jpg" alt="Marc Lefebvre"
+                                    <img src="/transit/transit/public/images/testimonials/man-europe.jpg" alt="Marc Lefebvre"
                                         style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
@@ -779,7 +779,7 @@
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="author-avatar"
                                     style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #6366f1;">
-                                    <img src="/transit/public/images/testimonials/woman-guinea.jpg"
+                                    <img src="/transit/transit/public/images/testimonials/woman-guinea.jpg"
                                         alt="Fatoumata Diallo" style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
@@ -802,7 +802,7 @@
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="author-avatar"
                                     style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #f59e0b;">
-                                    <img src="/transit/public/images/testimonials/man-guinea-2.jpg" alt="Ousmane Bah"
+                                    <img src="/transit/transit/public/images/testimonials/man-guinea-2.jpg" alt="Ousmane Bah"
                                         style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
@@ -823,7 +823,7 @@
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="author-avatar"
                                     style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #ec4899;">
-                                    <img src="/transit/public/images/testimonials/woman-uk.jpg" alt="Sarah Wilson"
+                                    <img src="/transit/transit/public/images/testimonials/woman-uk.jpg" alt="Sarah Wilson"
                                         style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
@@ -845,7 +845,7 @@
                             <div class="testimonial-author" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="author-avatar"
                                     style="width:45px;height:45px;border-radius:50%;overflow:hidden;border:2px solid #10b981;">
-                                    <img src="/transit/public/images/testimonials/man-guinea-3.jpg" alt="Mamadou Diallo"
+                                    <img src="/transit/transit/public/images/testimonials/man-guinea-3.jpg" alt="Mamadou Diallo"
                                         style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="author-info">
@@ -919,7 +919,7 @@
         <div
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4rem; margin-bottom: 2rem;">
             <div>
-                <a href="/transit/" class="landing-logo" style="margin-bottom: 1.5rem;">
+                <a href="/transit/transit/" class="landing-logo" style="margin-bottom: 1.5rem;">
                     TRANSIT<span class="accent">PRO</span>
                 </a>
                 <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">Entreprise guinéenne
@@ -942,10 +942,10 @@
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Compagnie</h4>
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
-                    <li><a href="/transit/about"
+                    <li><a href="/transit/transit/about"
                             style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">À Propos</a>
                     </li>
-                    <li><a href="/transit/contact"
+                    <li><a href="/transit/transit/contact"
                             style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Contact</a>
                     </li>
                     <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Nos

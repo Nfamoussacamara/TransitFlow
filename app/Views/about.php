@@ -18,7 +18,7 @@
         rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/transit/public/css/style.css">
+    <link rel="stylesheet" href="/transit/transit/public/css/style.css">
 
     <style>
         /* Shared Navigation Styles */
@@ -303,22 +303,22 @@
 <body>
 
     <nav class="landing-top-nav">
-        <a href="/transit/" class="landing-logo">
+        <a href="/transit/transit/" class="landing-logo">
             TRANSIT<span class="accent">PRO</span>
         </a>
         <div class="nav-links" style="display: flex; gap: 2rem; align-items: center; justify-content: center;">
-            <a href="/transit/" class="nav-link">Accueil</a>
-            <a href="/transit/about" class="nav-link">À Propos</a>
-            <a href="/transit/contact" class="nav-link">Contact</a>
+            <a href="/transit/transit/" class="nav-link">Accueil</a>
+            <a href="/transit/transit/about" class="nav-link">À Propos</a>
+            <a href="/transit/transit/contact" class="nav-link">Contact</a>
         </div>
         <div style="display: flex; justify-content: flex-end;">
-            <a href="/transit/login" class="btn-login-white">Connexion</a>
+            <a href="/transit/transit/login" class="btn-login-white">Connexion</a>
         </div>
     </nav>
 
     <!-- Hero About -->
     <header class="about-hero"
-        style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 150px 5% 100px; background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%), url('/transit/public/images/UL.jpg'); background-size: cover; background-position: center;">
+        style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 150px 5% 100px; background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%), url('/transit/transit/public/images/UL.jpg'); background-size: cover; background-position: center;">
         <div>
             <span class="section-tag"
                 style="background: rgba(255,255,255,0.15); color: #ffffff; margin-bottom: 1.5rem; display: inline-block;">🇬🇳
@@ -360,7 +360,7 @@
                 </div>
             </div>
             <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(4,88,224,0.15);">
-                <img src="/transit/public/images/UL.jpg" alt="Université de Labé — Berceau de TransitPro"
+                <img src="/transit/transit/public/images/UL.jpg" alt="Université de Labé — Berceau de TransitPro"
                     style="width:100%; height:400px; object-fit:cover; display:block;">
             </div>
         </div>
@@ -464,7 +464,7 @@
         <p style="font-size: 1.2rem; color: rgba(255,255,255,0.7); max-width: 700px; margin: 0 auto 3rem;">
             Rejoignez les milliers d'entreprises qui font confiance à TransitPro pour leur expansion mondiale.
         </p>
-        <a href="/transit/login" class="btn-cta">Démarrer maintenant</a>
+        <a href="/transit/transit/login" class="btn-cta">Démarrer maintenant</a>
     </section>
 
     <!-- Footer complet -->
@@ -472,7 +472,7 @@
         <div
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4rem; margin-bottom: 2rem;">
             <div>
-                <a href="/transit/" class="landing-logo" style="margin-bottom: 1.5rem; display:block;">TRANSIT<span
+                <a href="/transit/transit/" class="landing-logo" style="margin-bottom: 1.5rem; display:block;">TRANSIT<span
                         class="accent">PRO</span></a>
                 <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">Entreprise guinéenne
                     fondée à Conakry. Votre partenaire de confiance pour le transit international en Afrique et dans le
@@ -494,7 +494,7 @@
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Compagnie</h4>
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
-                    <li><a href="/transit/about"
+                    <li><a href="/transit/transit/about"
                             style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">À Propos</a>
                     </li>
                     <li><a href="#" style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Nos

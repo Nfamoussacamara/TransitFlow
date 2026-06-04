@@ -11,7 +11,7 @@
     <!-- Leaflet.js Cartographie -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Notre Design System local (avec cache-buster) -->
-    <link rel="stylesheet" href="/transit/public/css/style.css?v=3.5">
+    <link rel="stylesheet" href="/transit/transit/public/css/style.css?v=3.5">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
        ========================================================================= -->
         <aside class="sidebar">
             <div class="brand-logo-container">
-                <a href="/transit/" class="brand-logo-link">
+                <a href="/transit/transit/" class="brand-logo-link">
                     <div class="brand-logo-mark">
                         <svg viewBox="0 0 24 24" class="logo-svg">
                             <path d="M4 15l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -38,7 +38,7 @@
 
             <ul class="sidebar-menu">
                 <li class="menu-item active">
-                    <a href="/transit/dashboard">
+                    <a href="/transit/transit/dashboard">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
                             <path
@@ -49,7 +49,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="/transit/expeditions">
+                    <a href="/transit/transit/expeditions">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
                             <path
@@ -60,7 +60,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="/transit/factures">
+                    <a href="/transit/transit/factures">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
                             <path
@@ -71,7 +71,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="/transit/settings">
+                    <a href="/transit/transit/settings">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
                             <path
@@ -86,7 +86,7 @@
 
             <div class="sidebar-footer">
                 <div class="menu-item">
-                    <a href="/transit/" style="color: rgba(255, 255, 255, 0.75);">
+                    <a href="/transit/transit/" style="color: rgba(255, 255, 255, 0.75);">
                         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24">
                             <path
@@ -130,7 +130,7 @@
                     </div>
 
                     <!-- Bouton de déconnexion -->
-                    <a href="/transit/logout" class="navbar-logout" title="Se déconnecter">
+                    <a href="/transit/transit/logout" class="navbar-logout" title="Se déconnecter">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
                             viewBox="0 0 24 24">
                             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
@@ -640,7 +640,7 @@
 
             <div class="split-modal-body">
                 <!-- Colonne Gauche : Formulaire -->
-                <form method="POST" action="/transit/dashboard" class="split-form-col">
+                <form method="POST" action="/transit/transit/dashboard" class="split-form-col">
                     <input type="hidden" name="action" value="nouveau_transit">
                     <input type="hidden" name="distance" id="distance_hidden" value="0">
 
@@ -911,7 +911,7 @@
 
             <!-- Mode Modification (Formulaire interactif) -->
             <div id="details-edit-mode" style="display: none;">
-                <form method="POST" action="/transit/dashboard" class="modal-form">
+                <form method="POST" action="/transit/transit/dashboard" class="modal-form">
                     <input type="hidden" name="action" value="modifier_transit">
                     <input type="hidden" id="edit-transit-id" name="transit_id">
 

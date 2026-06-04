@@ -432,7 +432,7 @@
                         <h2>Créer votre mot de passe</h2>
                         <p>Compte pour : <strong><?= htmlspecialchars($email) ?></strong></p>
                     </div>
-                    <form class="login-form" action="/transit/login?action=activate" method="POST">
+                    <form class="login-form" action="/transit/transit/login?action=activate" method="POST">
                         <input type="hidden" name="email" value="<?= htmlspecialchars($email) ?>">
                         <div class="form-group">
                             <label class="form-label" for="password">Nouveau mot de passe</label>
@@ -466,7 +466,7 @@
                         </button>
                     </form>
                     <div style="text-align:center;margin-top:1rem;">
-                        <a href="/transit/login" style="font-size:.8rem;color:#64748b;">← Retour à la connexion</a>
+                        <a href="/transit/transit/login" style="font-size:.8rem;color:#64748b;">← Retour à la connexion</a>
                     </div>
 
                 <?php elseif ($step === 'activate'): ?>
@@ -475,7 +475,7 @@
                         <h2>Première connexion</h2>
                         <p>Saisissez l'e-mail utilisé lors de l'enregistrement de vos marchandises.</p>
                     </div>
-                    <form class="login-form" action="/transit/login?action=check_email" method="POST">
+                    <form class="login-form" action="/transit/transit/login?action=check_email" method="POST">
                         <div class="form-group">
                             <label class="form-label" for="email">Votre adresse e-mail</label>
                             <div class="form-input-wrapper">
@@ -491,7 +491,7 @@
                         </button>
                     </form>
                     <div style="text-align:center;margin-top:1rem;">
-                        <a href="/transit/login" style="font-size:.8rem;color:#64748b;">← Retour à la connexion</a>
+                        <a href="/transit/transit/login" style="font-size:.8rem;color:#64748b;">← Retour à la connexion</a>
                     </div>
 
                 <?php else: ?>
@@ -500,7 +500,7 @@
                         <h2>Espace Logistique</h2>
                         <p>Connectez-vous pour accéder à votre tableau de bord</p>
                     </div>
-                    <form class="login-form" action="/transit/login" method="POST">
+                    <form class="login-form" action="/transit/transit/login" method="POST">
                         <div class="form-group">
                             <label class="form-label" for="username">Identifiant</label>
                             <div class="form-input-wrapper">
@@ -531,7 +531,7 @@
                     <!-- Lien première connexion client -->
                     <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e2e8f0;">
                         <p style="font-size:.8rem;color:#94a3b8;margin-bottom:.5rem;">Client ? Première visite ?</p>
-                        <a href="/transit/login?step=activate"
+                        <a href="/transit/transit/login?step=activate"
                            style="font-size:.85rem;font-weight:600;color:#0458e0;text-decoration:none;">
                             ⭐ Activer mon espace client
                         </a>

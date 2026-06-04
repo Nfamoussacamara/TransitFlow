@@ -18,7 +18,7 @@
         rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/transit/public/css/style.css">
+    <link rel="stylesheet" href="/transit/transit/public/css/style.css">
 
     <style>
         .landing-top-nav {
@@ -212,20 +212,20 @@
 <body>
 
     <nav class="landing-top-nav">
-        <a href="/transit/" class="landing-logo">
+        <a href="/transit/transit/" class="landing-logo">
             TRANSIT<span class="accent">PRO</span>
         </a>
         <div class="nav-links">
-            <a href="/transit/" class="nav-link">Accueil</a>
-            <a href="/transit/about" class="nav-link">À Propos</a>
-            <a href="/transit/contact" class="nav-link">Contact</a>
+            <a href="/transit/transit/" class="nav-link">Accueil</a>
+            <a href="/transit/transit/about" class="nav-link">À Propos</a>
+            <a href="/transit/transit/contact" class="nav-link">Contact</a>
         </div>
         <div style="display: flex; justify-content: flex-end;">
-            <a href="/transit/login" class="btn-login-white">Connexion</a>
+            <a href="/transit/transit/login" class="btn-login-white">Connexion</a>
         </div>
     </nav>
 
-    <header style="min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 150px 5% 100px; background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.7) 100%), url('/transit/public/images/vitaly-gariev-lKEoyOfs0OM-unsplash.jpg'); background-size: cover; background-position: center; color: #ffffff;">
+    <header style="min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 150px 5% 100px; background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.7) 100%), url('/transit/transit/public/images/vitaly-gariev-lKEoyOfs0OM-unsplash.jpg'); background-size: cover; background-position: center; color: #ffffff;">
         <span class="section-tag" style="background: rgba(255,255,255,0.1); color: #ffffff;">Contactez nos
             experts</span>
         <h1
@@ -263,7 +263,7 @@
                 <div class="info-icon">📧</div>
                 <div>
                     <h4 style="margin: 0 0 5px; color: #0f172a;">E-mail</h4>
-                    <p style="margin: 0; color: #64748b;">camaranfamoussa199@gmail.com</p>
+                    <p style="margin: 0; color: #64748b;">contact@transitpro.com</p>
                 </div>
             </div>
 
@@ -286,11 +286,11 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="form-group">
                         <label class="form-label">Nom complet</label>
-                        <input type="text" class="form-input" placeholder="Ex: n'famoussa camara" required>
+                        <input type="text" class="form-input" placeholder="Ex: Votre nom complet" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">E-mail</label>
-                        <input type="email" class="form-input" placeholder="camaranfamoussa199@gmail.com" required>
+                        <input type="email" class="form-input" placeholder="votre.email@exemple.com" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -311,7 +311,7 @@
         <div
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4rem; margin-bottom: 2rem;">
             <div>
-                <a href="/transit/" class="landing-logo" style="margin-bottom: 1.5rem; display:block;">TRANSIT<span
+                <a href="/transit/transit/" class="landing-logo" style="margin-bottom: 1.5rem; display:block;">TRANSIT<span
                         class="accent">PRO</span></a>
                 <p style="color: rgba(255,255,255,0.6); line-height: 1.6; font-size: 0.9rem;">Entreprise guinéenne
                     fondée à Conakry. Votre partenaire de confiance pour le transit international en Afrique et dans le
@@ -333,10 +333,10 @@
             <div>
                 <h4 style="margin-bottom: 1.5rem; font-family: var(--font-heading);">Compagnie</h4>
                 <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem; padding: 0;">
-                    <li><a href="/transit/about"
+                    <li><a href="/transit/transit/about"
                             style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">À Propos</a>
                     </li>
-                    <li><a href="/transit/contact"
+                    <li><a href="/transit/transit/contact"
                             style="color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;">Contact</a>
                     </li>
                 </ul>

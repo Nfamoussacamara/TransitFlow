@@ -80,7 +80,7 @@ abstract class Controller {
         }
         // Envoi de l'en-tête HTTP de redirection.
         // "/transit" correspond au dossier virtuel sur Wamp.
-        header("Location: /transit" . $url);
+        header("Location: /transit/transit" . $url);
         // On stoppe immédiatement l'exécution pour s'assurer que la redirection soit traitée par le navigateur.
         exit();
     }

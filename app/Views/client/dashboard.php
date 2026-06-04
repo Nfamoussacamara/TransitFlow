@@ -24,7 +24,7 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
     <!-- CSS AOS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <!-- Design System (même feuille de style que l'admin) -->
-    <link rel="stylesheet" href="/transit/public/css/style.css?v=3.1">
+    <link rel="stylesheet" href="/transit/transit/public/css/style.css?v=3.1">
     <style>
         /* ── Layout sans sidebar ── */
         .app-container {
@@ -494,7 +494,7 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
         <!-- TOP NAVBAR -->
         <nav class="top-navbar">
             <div class="navbar-title">
-                <a href="/transit/" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
+                <a href="/transit/transit/" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
                     <svg viewBox="0 0 24 24" width="24" height="24" style="color: rgb(4, 88, 224);">
                         <path d="M4 15l8-8 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                         <path d="M4 19l8-8 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
@@ -524,7 +524,7 @@ function getStatutTransit(\DateTimeImmutable $depart, \DateTimeImmutable $arrive
                     <span><?= strtoupper(substr(htmlspecialchars($username), 0, 1)) ?></span>
                 </div>
                 <!-- Déconnexion -->
-                <a href="/transit/logout" class="navbar-logout" title="Se déconnecter">
+                <a href="/transit/transit/logout" class="navbar-logout" title="Se déconnecter">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
                     </svg>
